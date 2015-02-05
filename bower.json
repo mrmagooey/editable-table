@@ -1,0 +1,24 @@
+{
+  "name": "taboo-table",
+  "version": "0.0.0",
+  "authors": [
+    "mrmagooey"
+  ],
+  "description": "html tables for taboo",
+  "main": "taboo-table.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "taboo"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
