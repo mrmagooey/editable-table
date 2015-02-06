@@ -1,16 +1,25 @@
 
-var editableTableWidget = function (elementName, options) {
+var tabooTable = function (elementName, options) {
+    var defaultOptions = {
+	    cloneProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
+					  'text-align', 'font', 'font-size', 'font-family', 'font-weight',
+					  'border', 'border-top', 'border-bottom', 'border-left', 'border-right'],
+	    editor: document.createElement('textarea')
+    };
+    
 	var buildDefaultOptions = function () {
-		var opts = _.extend({}, editableTableWidget.defaultOptions);
+		var opts = _.extend({}, defaultOptions);
 		opts.editor = opts.editor.cloneNode();
 		return opts;
-	},
-        element = document.querySelector(elementName),
+	};
+    
+    var element = document.querySelector(elementName),
 		activeOptions = _.extend(buildDefaultOptions(), options),
 		ARROW_LEFT = 37, ARROW_UP = 38, ARROW_RIGHT = 39, ARROW_DOWN = 40, ENTER = 13, ESC = 27, TAB = 9,
 	    editor,
-		active,
-		showEditor = function (select) {
+		active;
+		
+    var showEditor = function (select) {
 			active = element.querySelector('td:hover');
 			if (active) {
 				editor.value = active.textContent;
@@ -30,16 +39,18 @@ var editableTableWidget = function (elementName, options) {
 					editor.select();
 				}
 			}
-		},
-		setActiveText = function () {
+		};
+    
+    var setActiveText = function () {
             var newText = editor.value;
 			if (active.textContent === newText || editor.classList.contains('error')) {
 				return true;
 			} else {
                 active.textContent = editor.value;
             }
-		},
-		movement = function (element, keycode) {
+            return undefined;
+		};
+    var movement = function (element, keycode) {
 			if (keycode === ARROW_RIGHT) {
 				return element.nextElementSibling;
 			} else if (keycode === ARROW_LEFT) {
@@ -52,7 +63,6 @@ var editableTableWidget = function (elementName, options) {
 			return [];
 		};
     
-    window.editor = editor;
     editor = element.parentNode.appendChild(document.createElement('input'));
     editor.style.position= 'absolute';
     editor.style.display = 'none';
@@ -103,7 +113,6 @@ var editableTableWidget = function (elementName, options) {
     element.addEventListener('keypress', showEditor);
     element.addEventListener('dblclick', showEditor);
     
-    window.element = element;
     element.style.cursor = 'pointer';
     
     var tableListener = function(e) {
@@ -139,9 +148,3 @@ var editableTableWidget = function (elementName, options) {
 	});
 };
 
-editableTableWidget.defaultOptions = {
-	cloneProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
-					  'text-align', 'font', 'font-size', 'font-family', 'font-weight',
-					  'border', 'border-top', 'border-bottom', 'border-left', 'border-right'],
-	editor: document.createElement('textarea')
-};
