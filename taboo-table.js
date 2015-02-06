@@ -14,13 +14,17 @@ var editableTableWidget = function (elementName, options) {
 			active = element.querySelector('td:hover');
 			if (active) {
 				editor.value = active.textContent;
+                var activeStyle = window.getComputedStyle(active);
+                activeOptions.cloneProperties.forEach(function(property){
+                    editor.style[property] = activeStyle[property];
+                });
 			    editor.classList.remove('error');
 			    editor.style.display = '';
                 var rect = active.getBoundingClientRect();
                 editor.style.top = rect.top + document.body.scrollTop + 'px';
                 editor.style.left = rect.left + document.body.scrollLeft + 'px';
-                editor.style.width = active.offsetWidth + 'px';
-                editor.style.height = active.offsetHeight + 'px';
+                // editor.style.width = active.offsetWidth + 'px';
+                // editor.style.height = active.offsetHeight + 'px';
 			    editor.focus();
 				if (select) {
 					editor.select();
