@@ -1,6 +1,11 @@
 
 var tabooTable = function (elementName, options) {
     
+    // When changes occur in the taboo table, this updates the html 
+    function SyncToHtml(){
+        
+    }
+    
     // allows cells in the html table to altered
     function Editor(elementName, options){
         var defaultOptions = {
@@ -20,27 +25,20 @@ var tabooTable = function (elementName, options) {
 	        editor,
 		    active;
         
-        var showEditor = function (select) {
-			active = element.querySelector('td:hover');
+        var showEditor = function(event) {
+			active = event.target;
 			if (active) {
 				editor.value = active.textContent;
                 var activeStyle = window.getComputedStyle(active);
                 activeOptions.cloneProperties.forEach(function(property){
-                    try {
-                        editor.style[property] = activeStyle[property];
-                    } catch (e){}; // silent fail is best fail
+                    editor.style[property] = activeStyle[property];
                 });
 			    editor.classList.remove('error');
 			    editor.style.display = '';
                 var rect = active.getBoundingClientRect();
                 editor.style.top = rect.top + document.body.scrollTop + 'px';
                 editor.style.left = rect.left + document.body.scrollLeft + 'px';
-                // editor.style.width = active.offsetWidth + 'px';
-                // editor.style.height = active.offsetHeight + 'px';
 			    editor.focus();
-			    if (select) {
-				    editor.select();
-			    }
             }
 		};
         var setActiveText = function () {
@@ -53,14 +51,17 @@ var tabooTable = function (elementName, options) {
             return undefined;
 	    };
         var movement = function (element, keycode) {
+            var currentIndex;
 		    if (keycode === ARROW_RIGHT) {
 			    return element.nextElementSibling;
 		    } else if (keycode === ARROW_LEFT) {
 			    return element.previousElementSibling;
 		    } else if (keycode === ARROW_UP) {
-			    return element.parent().prev().children().eq(element.index());
+                currentIndex = Array.prototype.indexOf.call(element.parentNode.children, element);
+                return element.parentNode.previousElementSibling.children[currentIndex];
 		    } else if (keycode === ARROW_DOWN) {
-			    return element.parent().next().children().eq(element.index());
+                currentIndex = Array.prototype.indexOf.call(element.parentNode.children, element);
+                return element.parentNode.nextElementSibling.children[currentIndex];
 		    }
 		    return [];
 	    };
@@ -74,7 +75,11 @@ var tabooTable = function (elementName, options) {
 		    setActiveText();
 		    editor.style.display = 'none';
 	    });
+        
         editor.addEventListener('keydown', function (e) {
+            var atEnd = editor.selectionEnd === editor.value.length,
+                atStart = editor.selectionEnd === 0;
+            
 		    if (e.which === ENTER) {
 			    setActiveText();
 			    editor.style.display = 'none';
@@ -82,17 +87,24 @@ var tabooTable = function (elementName, options) {
 			    e.preventDefault();
 			    e.stopPropagation();
 		    } else if (e.which === ESC) {
+                // ignore typed values, hide input editor
 			    editor.value = active.textContent;
 			    e.preventDefault();
 			    e.stopPropagation();
-			    editor.hide();
+			    editor.style.display = 'none';
 			    active.focus();
 		    } else if (e.which === TAB) {
 			    active.focus();
-		    } else if (this.selectionEnd - this.selectionStart === this.value.length) {
+		    } else if ((atEnd && (e.which === ARROW_DOWN || 
+                                  e.which === ARROW_RIGHT))
+                        || 
+                        atStart && (e.which === ARROW_UP || 
+                                    e.which === ARROW_LEFT)) {
 			    var possibleMove = movement(active, e.which);
-			    if (possibleMove.length > 0) {
-				    possibleMove.focus();
+			    if (possibleMove) {
+                    console.log("possibleMove", possibleMove);
+                    window.possibleMove = possibleMove;
+                    possibleMove.focus();
 				    e.preventDefault();
 				    e.stopPropagation();
 			    }
@@ -110,10 +122,11 @@ var tabooTable = function (elementName, options) {
         element.addEventListener('keypress', showEditor);
         element.addEventListener('dblclick', showEditor);
         element.style.cursor = 'pointer';
-        var tableListener = function(e) {
+        
+        element.addEventListener('keydown', function(e) {
 		    var prevent = true,
-			    possibleMove = movement((e.target), e.which);
-		    if (possibleMove.length > 0) {
+			    possibleMove = movement(e.target, e.which);
+		    if (possibleMove) {
 			    possibleMove.focus();
 		    } else if (e.which === ENTER) {
 			    showEditor(false);
@@ -127,14 +140,16 @@ var tabooTable = function (elementName, options) {
 			    e.stopPropagation();
 			    e.preventDefault();
 		    }
-	    };
-        element.addEventListener('keydown', tableListener);
-        element.addEventListener('click', tableListener);
-        element.addEventListener('dblclick', tableListener);
-	    element.querySelector('td').tabindex = 1;
+	    });
+        
+        // add tabIndex to each td so it can be focused
+        var tdElements = element.getElementsByTagName('td');
+        for (var i = 0; i < tdElements.length; i++){
+            tdElements[i].tabIndex = '1';
+        }
         
 	    window.addEventListener('resize', function () {
-		    if (editor.matches(':visible')) {
+		    if (editor.style.display !== 'none') {
                 var rect = active.getBoundingClientRect();
                 editor.style.top = rect.top + document.body.scrollTop + 'px';
                 editor.style.left = rect.left + document.body.scrollLeft + 'px';
