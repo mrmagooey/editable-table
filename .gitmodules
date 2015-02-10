@@ -1,0 +1,3 @@
+[submodule "taboo"]
+	path = taboo
+	url = git@github.com:mrmagooey/taboo.git

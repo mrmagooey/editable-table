@@ -1,10 +1,73 @@
 
-var tabooTable = function (elementName, options) {
+var tabooTable = function (elementName, taboo) {
+    var tableElement = document.querySelector(elementName);
     
     // When changes occur in the taboo table, this updates the html 
-    function SyncToHtml(){
+    function syncToHtml(taboo){
+        var _this = this;
+        this.clearTable();
+        taboo.getColumnHeaders().forEach(function(header){
+            _this.addColumn(header);
+        });
+        taboo.getRows({array:true}).forEach(function(row){
+            _this.addRow(row);
+        });
+    };
+    
+    // when changes occur in the table this updates the taboo
+    function syncToTaboo(){
         
+    };
+    
+    // for updating the table
+    // add/remove columns and rows
+    function htmlTable(){
+        
+    };
+    
+    function registerCallbacks(){
+        taboo.registerCallback('update', syncToHtml);
     }
+    
+    // 
+    var addRow = function(data){
+        // add row
+        var newTr = tableElement.querySelector('tbody').appendChild(document.createElement('tr'));
+        var columns = tableElement.querySelector('tbody tr').childNodes.length;
+        // add columns
+        for (var i = 0; i < columns; i++){
+            var elem = document.createElement('td');
+            elem.textContent = data[i];
+            newTr.appendChild();
+        }
+    };
+
+    // 
+    var deleteRow = function(){
+        var rows = tableElement.querySelectorAll('tbody tr');
+        var lastRow = rows[rows.length -1];
+        lastRow.parentNode.removeChild(lastRow);
+    };
+    
+    var addColumn = function(columnHeader){
+        var header = document.createElement('th');
+        header.textContent = columnHeader;
+        tableElement.querySelector('thead tr').appendChild(header);
+        var rows = tableElement.querySelectorAll('tbody tr');
+        for (var i = 0; i < rows.length; i++) {
+            var elem = document.createElement('td');
+            elem.tabIndex = '1';
+            rows[i].appendChild(elem);
+        }
+    };
+    
+    var removeColumn = function(columnHeader){
+        tableElement.querySelector('thead tr');
+    };
+    
+    var clearTable = function(){
+        tableElement.innerHTML = '<thead></thead><tbody></tbody>';
+    };
     
     // allows cells in the html table to altered
     function Editor(elementName, options){
@@ -19,7 +82,7 @@ var tabooTable = function (elementName, options) {
 		    opts.editor = opts.editor.cloneNode();
 		    return opts;
 	    };
-        var element = document.querySelector(elementName),
+        var element = tableElement,
 		    activeOptions = _.extend(buildDefaultOptions(), options),
 		    ARROW_LEFT = 37, ARROW_UP = 38, ARROW_RIGHT = 39, ARROW_DOWN = 40, ENTER = 13, ESC = 27, TAB = 9,
 	        editor,
@@ -58,12 +121,24 @@ var tabooTable = function (elementName, options) {
 			    return element.previousElementSibling;
 		    } else if (keycode === ARROW_UP) {
                 currentIndex = Array.prototype.indexOf.call(element.parentNode.children, element);
-                return element.parentNode.previousElementSibling.children[currentIndex];
+                var previous = element.parentNode.previousElementSibling;
+                if (previous){
+                    return previous.children[currentIndex];
+                } else{
+                    return false;
+                }
+                
 		    } else if (keycode === ARROW_DOWN) {
                 currentIndex = Array.prototype.indexOf.call(element.parentNode.children, element);
-                return element.parentNode.nextElementSibling.children[currentIndex];
+                var next = element.parentNode.nextElementSibling;
+                if (next){
+                    return next.children[currentIndex];
+                } else {
+                    return false;
+                }
+                
 		    }
-		    return [];
+		    return false;
 	    };
         
         editor = element.parentNode.appendChild(document.createElement('input'));
@@ -102,7 +177,6 @@ var tabooTable = function (elementName, options) {
                                     e.which === ARROW_LEFT)) {
 			    var possibleMove = movement(active, e.which);
 			    if (possibleMove) {
-                    console.log("possibleMove", possibleMove);
                     window.possibleMove = possibleMove;
                     possibleMove.focus();
 				    e.preventDefault();
@@ -161,7 +235,7 @@ var tabooTable = function (elementName, options) {
     
     // init
     (function (){
-        Editor(elementName, options);
+        Editor(elementName);
     })();
     
 };
