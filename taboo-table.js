@@ -74,7 +74,8 @@ var tabooTable = function (elementName, taboo) {
         var defaultOptions = {
 	        cloneProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
 					          'text-align', 'font', 'font-size', 'font-family', 'font-weight',
-					          'border', 'border-top', 'border-bottom', 'border-left', 'border-right'],
+					          'border', 'border-top', 'border-bottom', 'border-left', 'border-right', 'height',
+                              'width'],
 	        editor: document.createElement('textarea')
         };
 	    var buildDefaultOptions = function () {
@@ -93,6 +94,7 @@ var tabooTable = function (elementName, taboo) {
 			if (active) {
 				editor.value = active.textContent;
                 var activeStyle = window.getComputedStyle(active);
+                window.activeStyle = activeStyle;
                 activeOptions.cloneProperties.forEach(function(property){
                     editor.style[property] = activeStyle[property];
                 });
