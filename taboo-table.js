@@ -205,7 +205,7 @@ var tabooTable = function (elementName, taboo) {
 		    return false;
 	    };
         
-        editor = element.parentNode.appendChild(document.createElement('input'));
+        editor = document.querySelector('body').appendChild(document.createElement('input'));
         editor.style.position= 'absolute';
         editor.style.display = 'none';
         
