@@ -143,7 +143,6 @@ var tabooTable = function (elementName, taboo) {
 		    active;
         
         var showEditor = function(event) {
-            
 			active = event.target;
             if (active === element){
                 // user has clicked the table itself, not a cell within the table
@@ -190,7 +189,7 @@ var tabooTable = function (elementName, taboo) {
                 } else{
                     return false;
                 }
-		    } else if (keycode === ARROW_DOWN) {
+		    } else if (keycode === ARROW_DOWN || keycode === ENTER) {
                 currentIndex = Array.prototype.indexOf.call(cell.parentNode.children, cell);
                 var nextRow = cell.parentNode.nextElementSibling;
                 // if there is another row beneath this one, move to it
@@ -217,15 +216,18 @@ var tabooTable = function (elementName, taboo) {
         
         editor.addEventListener('keydown', function (e) {
             var atEnd = editor.selectionEnd === editor.value.length,
-                atStart = editor.selectionEnd === 0;
+                atStart = editor.selectionEnd === 0,
+                currentColumnIndex = Array.prototype.indexOf.call(active.parentNode.children, active),
+                currentRowIndex = Array.prototype.indexOf.call(active.parentNode.parentNode.children, active.parentNode);
+            
 		    if (e.which === ENTER) {
-			    setActiveText();
-			    editor.style.display = 'none';
-                // move down in addition to setting the text
-                var move = movement(active, ARROW_DOWN);
-                move.focus();
-			    e.preventDefault();
+                editor.dispatchEvent(new Event('blur'));
+                e.preventDefault();
 			    e.stopPropagation();
+                var cell = element.querySelector('tr:nth-child(' + (currentRowIndex + 1)  + 
+                                                 ") td:nth-child(" + (currentColumnIndex + 1) + ")");
+                var move = movement(cell, ENTER);
+                move.focus();
 		    } else if (e.which === ESC) {
                 // ignore typed values, hide input editor
 			    editor.value = active.textContent;
@@ -234,7 +236,18 @@ var tabooTable = function (elementName, taboo) {
 			    editor.style.display = 'none';
 			    active.focus();
 		    } else if (e.which === TAB) {
-			    active.focus();
+			    setActiveText();
+			    editor.style.display = 'none';
+                var cell = element.querySelector('tr:nth-child(' + (currentRowIndex + 1)  + 
+                                                 ") td:nth-child(" + (currentColumnIndex + 1) + ")");
+                var possibleMove = movement(cell, ARROW_RIGHT);
+                if (possibleMove){
+                    possibleMove.focus();
+                } else {
+                    active.focus();
+                }
+			    e.preventDefault();
+			    e.stopPropagation();
 		    } else if ((atEnd && (e.which === ARROW_DOWN || 
                                   e.which === ARROW_RIGHT))
                         || 
@@ -242,7 +255,6 @@ var tabooTable = function (elementName, taboo) {
                                     e.which === ARROW_LEFT)) {
 			    var possibleMove = movement(active, e.which);
 			    if (possibleMove) {
-                    window.possibleMove = possibleMove;
                     possibleMove.focus();
 				    e.preventDefault();
 				    e.stopPropagation();
@@ -272,7 +284,7 @@ var tabooTable = function (elementName, taboo) {
 		    } else if (e.which === 17 || e.which === 91 || e.which === 93) {
 			    showEditor(true);
 			    prevent = false;
-		    } else {
+            } else {
 			    prevent = false;
 		    }
 		    if (prevent) {
