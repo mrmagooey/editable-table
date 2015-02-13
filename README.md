@@ -1,25 +1,43 @@
-editable-table
+taboo-table
 =================
 
-This tiny (3KB, < 120 lines) plugin turns any table into an editable spreadsheet. Here are the key features:
+This plugin synchronises taboo tabular data structures with html tables and provides some in page editing capabilities. Here are the key features:
 
-* No magic - works on a normal HTML table (so you can plug it in into any web
-table)
-* Supports validation and change events (so you can warn about invalid input or
-prevent invalid changes)
-* Uses standard DOM focus for selection (so does not interrupt scrolling or
-tabbing outside the table)
-* Native copy/paste support
-* Does not force any styling (so you can style it any way you want, using normal
-CSS)
-* Works well with Bootstrap
-* Depends only on underscore
+* Updates a html table as a taboo table updates, and the reverse.
+* Uses standard DOM focus for selection (so does not interrupt scrolling or tabbing outside the table)
+* Does not force any styling (so you can style it any way you want, using normal CSS)
+
+Dependencies
+------------
+
+* Underscore
+* Taboo
+
+This library requires a modern, standards compliant browser.
 
 Basic Usage
 -----------
 
-See http://mindmup.github.com/editable-table/
+The tabooTable constructor takes two arguments, a selector for a <table> element and a taboo object.
 
-Dependencies
-------------
-* jQuery http://jquery.com/
+    var taboo = new Taboo('test1');
+    taboo.addRows([{col1:'a', col3:'b'}, {col1:'c', col3:'d'}]);
+    var table = new tabooTable('#table', taboo);
+
+This will fill the html table with the contents of the taboo table.
+
+The html table can be resynchronised to a new taboo table using updateTaboo() method. This function allows for computed tables (e.g. those that exist as the result of a join) to be constantly updated:
+
+    var innerTaboo = taboo1.innerJoin('col1', taboo2, 'col1');
+    var innerTable = new tabooTable('#inner', innerTaboo);
+
+    function updateInnerJoin(){
+        innerTaboo = taboo1.innerJoin('col1', taboo2, 'col1');
+        innerTable.updateTaboo(innerTaboo);
+    };
+    
+    taboo1.registerCallback('update', updateInnerJoin);
+    taboo2.registerCallback('update', updateInnerJoin);
+
+This example shows how Taboo's callback system can be used to trigger the update of an inner joined taboo table (`innerTaboo`), and then update a tabooTable (`innerTable`).
+

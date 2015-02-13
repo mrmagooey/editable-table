@@ -4,95 +4,157 @@
     <meta charset="utf-8">
 	<title>Tiny editable spreadsheet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="keywords" content="opensource bootstrap editable table spreadsheet" />
-    <meta name="description" content="This tiny plugin turns any table into an editable spreadsheet" />
-    <link rel="apple-touch-icon" href="https://d1g6a398qq2djm.cloudfront.net/img/apple-touch-icon.png" />
-    <link rel="shortcut icon" href="https://d1g6a398qq2djm.cloudfront.net/img/favicon.ico" />
-    
-    <link href="external/google-code-prettify/prettify.css" rel="stylesheet">
-    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<link href="https://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
-    <link href="./index.css" rel="stylesheet">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script> -->
-    <!-- <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script> -->
-    <!-- <script src="./external/google-code-prettify/prettify.js"></script> -->
-    <script src="./taboo-table.js"></script>
-    <!-- <script src="./numeric-input-example.js"></script> -->
+    <meta name="keywords" content="opensource editable table spreadsheet" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" type="text/css" media="screen" />
   </head>
   <body>
     <div class="container">
-      <div class="hero-unit">
-	    <h1>editableTableWidget<br/> <small>tiny editable spreadsheet</small></h1>
-	    <hr/>
-        <table id="mainTable" class="table table-striped">
-          <thead><tr><th>Name</th><th>Cost</th><th>Profit</th><th>Fun</th></tr></thead>
-          <tbody>
-            <tr><td>Car</td><td>100</td><td>200</td><td>0</td></tr>
-            <tr><td>Bike</td><td>330</td><td>240</td><td>1</td></tr>
-            <tr><td>Plane</td><td>430</td><td>540</td><td>3</td></tr>
-            <tr><td>Yacht</td><td>100</td><td>200</td><td>0</td></tr>
-            <tr><td>Segway</td><td>330</td><td>240</td><td>1</td></tr>
-          </tbody>
-		  <tfoot><tr><th><strong>TOTAL</strong></th><th></th><th></th><th></th></tr></tfoot>
-        </table>
-        <h2><small>just start typing to edit, or move around with arrow keys or mouse clicks!</small></h2>
-      </div>
       <div class="row">
-        <div class="span6">
+        <div class="col-md-12">
+          <h1>taboo-table</h1>
           <h2>About</h2>
           <p>
-	        This turns any table into an editable spreadsheet. Here are the key features:
+            This plugin synchronises taboo tabular data structures with html tables and provides some in page editing capabilities. Key features:
           </p>
           <ul>
-            <li>No magic - works on a normal HTML table (so you can plug it in into any web table, and apply any JS function to calculate values)</li>
-            <li>Supports validation and change events (so you can warn about invalid input or prevent invalid changes)</li>
+            <li>Updates a html table as a taboo table updates, and the reverse.</li>
             <li>Uses standard DOM focus for selection (so does not interrupt scrolling or tabbing outside the table)</li>
-            <li>Input automatically copies underlying table cell styling</li>
-            <li>Native copy/paste support</li>
             <li>Does not force any styling (so you can style it any way you want, using normal CSS)</li>
-            <li>Works well with Bootstrap</li>
-            <li>Tested in Chrome 32, Firefox 26, IE 10, Safari 7, Android Chrome and iOS 7 Safari</li>
           </ul>
-
-          <h2>Usage</h2>
-          <pre class="prettyprint ">
-            editableTableWidget('element #name');
-          </pre>    
-          <p>Use a text area instead of input field to input (or supply a custom editor element)</p>
-          <p>Make sure that the editor clones some specific CSS properties of the underlying cell</p>
-          <pre class="prettyprint ">
-            $('#table').editableTableWidget({
-            cloneProperties: ['background', 'border', 'outline']
-            });
-          </pre>
-          <p>Mark content as invalid during editing (for example, change one of the item names above to blank or try to enter a non-numeric cost)</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Usage and Examples</h2>
+          <p>
+            Each html table can be navigated using arrow keys, and new data can be input by simply typing it.
+          </p>
+          <p>
+            New rows can be added by moving the focus to the bottom of the table and pressing either the down arrow or enter.
+          </p>
+        <h3>Basic Table Synchronisation</h3>
+        </div>
+        <div class="col-md-6">
+          <h4>Table 1</h4>
+          <p>
+            taboo-table created by using a taboo object pre-filled with rows.
+          </p>
           <pre class="prettyprint">
-            $('table td').on('validate', function(evt, newValue) {
-            if (....) { 
-            return false; // mark cell as invalid 
-            }
-            });
+var taboo1 = new Taboo('test1');
+// add rows to taboo1
+taboo1.addRows([{col1:'a', col3:'b'}, {col1:'c', col3:'d'}]);
+taboo1.addRows([{col1:'e', col3:'f'}, {col1:'g', col3:'h'}]);
+var table1 = new tabooTable('#test1', taboo1);
           </pre>
-          <p>Act on a change (or even reject it). This is how the numbers above recalculate. Also, try to increase total cost over 5000!</p>
+          <table id="test1" class="table table-bordered"></table>
+        </div>
+        <div class="col-md-6">
+          <h4>Table 2</h4>
+          <p>
+            taboo-table synchronising the html table with the taboo table as it updates.
+          </p>
           <pre class="prettyprint">
-            $('table td').on('change', function(evt, newValue) {
-            // do something with the new cell value 
-            if (....) { 
-            return false; // reject change
-            }
-            });
+var taboo1 = new Taboo('test1');
+var table1 = new tabooTable('#test1', taboo1);
+// table1 is now watching taboo1 for updates
+taboo1.addRows([{col1:'a', col3:'b'}, {col1:'c', col3:'d'}]);
+taboo1.addRows([{col1:'e', col3:'f'}, {col1:'g', col3:'h'}]);
           </pre>
+          <table id="test2" class="table table-bordered"></table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Join Table Synchronisation</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h4>Table 1 left join Table 2 on col1</h4>
+          <p>
+            Demonstrates a taboo-table updating the underlying taboo object as it 
+            is updated from a left join on column <strong>col1</strong>.
+          </p>
+          <p>
+            Manual changes to these tables will be overwritten by making changes to above tables.
+          </p>
+          <pre class="prettyprint">
+var leftTaboo = taboo1.leftJoin('col1', taboo2, 'col1');
+var leftTable = new tabooTable('#join', leftTaboo);
+function updateLeftJoin(){
+    leftTaboo = taboo1.leftJoin('col1', taboo2, 'col1');
+    leftTable.updateTaboo(leftTaboo);
+};
+taboo1.registerCallback('update', updateLeftJoin);
+taboo2.registerCallback('update', updateLeftJoin);
+          </pre>
+          <table id="join" class="table table-bordered"></table>
+          <br/>
+        </div>
+        <div class="col-md-6">
+          <h4>Table 1 inner join Table 2 on col1</h4>
+          <p>
+            Demonstrates a taboo-table updating the underlying taboo object as it 
+            is updated from an inner join on column <strong>col1</strong>.
+          </p>
+          <p>
+            Manual changes to these tables will be overwritten by making changes to above tables.
+          </p>
+          <pre class="prettyprint">
+var innerTaboo = taboo1.innerJoin('col1', taboo2, 'col1');
+var innerTable = new tabooTable('#inner', innerTaboo);
+function updateInnerJoin(){
+    innerTaboo = taboo1.innerJoin('col1', taboo2, 'col1');
+    innerTable.updateTaboo(innerTaboo);
+};
+taboo1.registerCallback('update', updateInnerJoin);
+taboo2.registerCallback('update', updateInnerJoin);
+          </pre>
+          <table id="inner" class="table table-bordered"></table>
+          <br/>
         </div>
       </div>
     </div>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+    <script>prettyPrint();</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>    
+    <script src="https://rawgit.com/mrmagooey/taboo/master/taboo.js"></script>
+    <script src="./taboo-table.js"></script>
     <script>
-      <!-- $('#mainTable').editableTableWidget().numericInputExample().find('td:first').focus(); -->
-      new tabooTable('#mainTable');
+      var taboo1 = new Taboo('test1');
+      taboo1.addRows([{col1:'a', col3:'b'}, {col1:'c', col3:'d'}]);
+      var table1 = new tabooTable('#test1', taboo1);
+      taboo1.addRows([{col1:'e', col3:'f'}, {col1:'g', col3:'h'}]);
+      
+      var taboo2 = new Taboo('test2');
+      taboo2.addRows([{col1:'a', col2:'b'}, {col1:'c', col2:'asdf'}]);
+      var table2 = new tabooTable('#test2', taboo2);
+      taboo2.addRows([{col1:'cat', col2:'dog'}, {col1:'horse', col2:'elephant'}]);
+      
+      var leftTaboo = taboo1.leftJoin('col1', taboo2, 'col1');
+      var leftTable = new tabooTable('#join', leftTaboo);
+      
+      function updateLeftJoin(){
+      leftTaboo = taboo1.leftJoin('col1', taboo2, 'col1');
+      leftTable.updateTaboo(leftTaboo);
+      };
+      
+      taboo1.registerCallback('update', updateLeftJoin);
+      taboo2.registerCallback('update', updateLeftJoin);
+      
+      var innerTaboo = taboo1.innerJoin('col1', taboo2, 'col1');
+      var innerTable = new tabooTable('#inner', innerTaboo);
+      
+      function updateInnerJoin(){
+      innerTaboo = taboo1.innerJoin('col1', taboo2, 'col1');
+      innerTable.updateTaboo(innerTaboo);
+      };
+      
+      taboo1.registerCallback('update', updateInnerJoin);
+      taboo2.registerCallback('update', updateInnerJoin);
+      
     </script>
-
   </body>
 </html>
