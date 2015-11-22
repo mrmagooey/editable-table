@@ -18,7 +18,7 @@ This library requires a modern, standards compliant browser.
 Basic Usage
 -----------
 
-The tabooTable constructor takes two arguments, a selector for a <table> element and a taboo object.
+The tabooTable constructor takes two arguments, a selector for a `<table>` element and a taboo object.
 
     var taboo = new Taboo('test1');
     taboo.addRows([{col1:'a', col3:'b'}, {col1:'c', col3:'d'}]);
