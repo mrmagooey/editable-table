@@ -1,0 +1,25 @@
+{
+  "name": "taboo-table",
+  "version": "0.1.0",
+  "description": "html tables for taboo",
+  "main": "taboo-table.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrmagooey/taboo-table.git"
+  },
+  "keywords": [
+    "taboo"
+  ],
+  "author": "Peter Davis <pete@basementlabs.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrmagooey/taboo-table/issues"
+  },
+  "homepage": "https://github.com/mrmagooey/taboo-table#readme"
+}
