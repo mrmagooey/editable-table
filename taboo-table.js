@@ -9,20 +9,13 @@ var tabooTable = function (elementName, taboo) {
   
   this.taboo = taboo;
   
-  function copyStyle(newElement, copyElement){
-    var activeStyle = window.getComputedStyle(copyElement);
-    cloneProperties.forEach(function(property){
-      newElement.style[property] = activeStyle[property];
-    });
-  }
-  
   // When changes occur in the taboo table, this updates the html 
   function syncToHtml(taboo){
     clearTable();
     _this.taboo.getColumnHeaders().forEach(function(header){
       addColumn(header);
     });
-    _this.taboo.getRows({array:true}).forEach(function(row){
+    _this.taboo.getRows({objects:false}).forEach(function(row){
       addRow(row);
     });
   };
@@ -54,6 +47,14 @@ var tabooTable = function (elementName, taboo) {
   
   function registerCallbacks(){
     taboo.registerCallback('update', syncToHtml);
+  }
+  
+  // copy the style from the copyElement to the newElement
+  function copyStyle(newElement, copyElement){
+    var activeStyle = window.getComputedStyle(copyElement);
+    cloneProperties.forEach(function(property){
+      newElement.style[property] = activeStyle[property];
+    });
   }
   
   // 
