@@ -1,0 +1,246 @@
+/*!
+ * Bootstrap v3.3.5 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+table {
+  background-color: transparent;
+}
+caption {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #777;
+  text-align: left;
+}
+th {
+  text-align: left;
+}
+.taboo-table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+.taboo-table > thead > tr > th,
+.taboo-table > tbody > tr > th,
+.taboo-table > tfoot > tr > th,
+.taboo-table > thead > tr > td,
+.taboo-table > tbody > tr > td,
+.taboo-table > tfoot > tr > td {
+  padding: 8px;
+  line-height: 1.42857143;
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+}
+.taboo-table > thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #ddd;
+}
+.taboo-table > caption + thead > tr:first-child > th,
+.taboo-table > colgroup + thead > tr:first-child > th,
+.taboo-table > thead:first-child > tr:first-child > th,
+.taboo-table > caption + thead > tr:first-child > td,
+.taboo-table > colgroup + thead > tr:first-child > td,
+.taboo-table > thead:first-child > tr:first-child > td {
+  border-top: 0;
+}
+.taboo-table > tbody + tbody {
+  border-top: 2px solid #ddd;
+}
+.taboo-table .taboo-table {
+  background-color: #fff;
+}
+.taboo-table-condensed > thead > tr > th,
+.taboo-table-condensed > tbody > tr > th,
+.taboo-table-condensed > tfoot > tr > th,
+.taboo-table-condensed > thead > tr > td,
+.taboo-table-condensed > tbody > tr > td,
+.taboo-table-condensed > tfoot > tr > td {
+  padding: 5px;
+}
+.taboo-table-bordered {
+  border: 1px solid #ddd;
+}
+.taboo-table-bordered > thead > tr > th,
+.taboo-table-bordered > tbody > tr > th,
+.taboo-table-bordered > tfoot > tr > th,
+.taboo-table-bordered > thead > tr > td,
+.taboo-table-bordered > tbody > tr > td,
+.taboo-table-bordered > tfoot > tr > td {
+  border: 1px solid #ddd;
+}
+.taboo-table-bordered > thead > tr > th,
+.taboo-table-bordered > thead > tr > td {
+  border-bottom-width: 2px;
+}
+.taboo-table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+.taboo-table-hover > tbody > tr:hover {
+  background-color: #f5f5f5;
+}
+table col[class*="col-"] {
+  position: static;
+  display: table-column;
+  float: none;
+}
+table td[class*="col-"],
+table th[class*="col-"] {
+  position: static;
+  display: table-cell;
+  float: none;
+}
+.taboo-table > thead > tr > td.active,
+.taboo-table > tbody > tr > td.active,
+.taboo-table > tfoot > tr > td.active,
+.taboo-table > thead > tr > th.active,
+.taboo-table > tbody > tr > th.active,
+.taboo-table > tfoot > tr > th.active,
+.taboo-table > thead > tr.active > td,
+.taboo-table > tbody > tr.active > td,
+.taboo-table > tfoot > tr.active > td,
+.taboo-table > thead > tr.active > th,
+.taboo-table > tbody > tr.active > th,
+.taboo-table > tfoot > tr.active > th {
+  background-color: #f5f5f5;
+}
+.taboo-table-hover > tbody > tr > td.active:hover,
+.taboo-table-hover > tbody > tr > th.active:hover,
+.taboo-table-hover > tbody > tr.active:hover > td,
+.taboo-table-hover > tbody > tr:hover > .active,
+.taboo-table-hover > tbody > tr.active:hover > th {
+  background-color: #e8e8e8;
+}
+.taboo-table > thead > tr > td.success,
+.taboo-table > tbody > tr > td.success,
+.taboo-table > tfoot > tr > td.success,
+.taboo-table > thead > tr > th.success,
+.taboo-table > tbody > tr > th.success,
+.taboo-table > tfoot > tr > th.success,
+.taboo-table > thead > tr.success > td,
+.taboo-table > tbody > tr.success > td,
+.taboo-table > tfoot > tr.success > td,
+.taboo-table > thead > tr.success > th,
+.taboo-table > tbody > tr.success > th,
+.taboo-table > tfoot > tr.success > th {
+  background-color: #dff0d8;
+}
+.taboo-table-hover > tbody > tr > td.success:hover,
+.taboo-table-hover > tbody > tr > th.success:hover,
+.taboo-table-hover > tbody > tr.success:hover > td,
+.taboo-table-hover > tbody > tr:hover > .success,
+.taboo-table-hover > tbody > tr.success:hover > th {
+  background-color: #d0e9c6;
+}
+.taboo-table > thead > tr > td.info,
+.taboo-table > tbody > tr > td.info,
+.taboo-table > tfoot > tr > td.info,
+.taboo-table > thead > tr > th.info,
+.taboo-table > tbody > tr > th.info,
+.taboo-table > tfoot > tr > th.info,
+.taboo-table > thead > tr.info > td,
+.taboo-table > tbody > tr.info > td,
+.taboo-table > tfoot > tr.info > td,
+.taboo-table > thead > tr.info > th,
+.taboo-table > tbody > tr.info > th,
+.taboo-table > tfoot > tr.info > th {
+  background-color: #d9edf7;
+}
+.taboo-table-hover > tbody > tr > td.info:hover,
+.taboo-table-hover > tbody > tr > th.info:hover,
+.taboo-table-hover > tbody > tr.info:hover > td,
+.taboo-table-hover > tbody > tr:hover > .info,
+.taboo-table-hover > tbody > tr.info:hover > th {
+  background-color: #c4e3f3;
+}
+.taboo-table > thead > tr > td.warning,
+.taboo-table > tbody > tr > td.warning,
+.taboo-table > tfoot > tr > td.warning,
+.taboo-table > thead > tr > th.warning,
+.taboo-table > tbody > tr > th.warning,
+.taboo-table > tfoot > tr > th.warning,
+.taboo-table > thead > tr.warning > td,
+.taboo-table > tbody > tr.warning > td,
+.taboo-table > tfoot > tr.warning > td,
+.taboo-table > thead > tr.warning > th,
+.taboo-table > tbody > tr.warning > th,
+.taboo-table > tfoot > tr.warning > th {
+  background-color: #fcf8e3;
+}
+.taboo-table-hover > tbody > tr > td.warning:hover,
+.taboo-table-hover > tbody > tr > th.warning:hover,
+.taboo-table-hover > tbody > tr.warning:hover > td,
+.taboo-table-hover > tbody > tr:hover > .warning,
+.taboo-table-hover > tbody > tr.warning:hover > th {
+  background-color: #faf2cc;
+}
+.taboo-table > thead > tr > td.danger,
+.taboo-table > tbody > tr > td.danger,
+.taboo-table > tfoot > tr > td.danger,
+.taboo-table > thead > tr > th.danger,
+.taboo-table > tbody > tr > th.danger,
+.taboo-table > tfoot > tr > th.danger,
+.taboo-table > thead > tr.danger > td,
+.taboo-table > tbody > tr.danger > td,
+.taboo-table > tfoot > tr.danger > td,
+.taboo-table > thead > tr.danger > th,
+.taboo-table > tbody > tr.danger > th,
+.taboo-table > tfoot > tr.danger > th {
+  background-color: #f2dede;
+}
+.taboo-table-hover > tbody > tr > td.danger:hover,
+.taboo-table-hover > tbody > tr > th.danger:hover,
+.taboo-table-hover > tbody > tr.danger:hover > td,
+.taboo-table-hover > tbody > tr:hover > .danger,
+.taboo-table-hover > tbody > tr.danger:hover > th {
+  background-color: #ebcccc;
+}
+.taboo-table-responsive {
+  min-height: .01%;
+  overflow-x: auto;
+}
+@media screen and (max-width: 767px) {
+  .taboo-table-responsive {
+    width: 100%;
+    margin-bottom: 15px;
+    overflow-y: hidden;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: 1px solid #ddd;
+  }
+  .taboo-table-responsive > .taboo-table {
+    margin-bottom: 0;
+  }
+  .taboo-table-responsive > .taboo-table > thead > tr > th,
+  .taboo-table-responsive > .taboo-table > tbody > tr > th,
+  .taboo-table-responsive > .taboo-table > tfoot > tr > th,
+  .taboo-table-responsive > .taboo-table > thead > tr > td,
+  .taboo-table-responsive > .taboo-table > tbody > tr > td,
+  .taboo-table-responsive > .taboo-table > tfoot > tr > td {
+    white-space: nowrap;
+  }
+  .taboo-table-responsive > .taboo-table-bordered {
+    border: 0;
+  }
+  .taboo-table-responsive > .taboo-table-bordered > thead > tr > th:first-child,
+  .taboo-table-responsive > .taboo-table-bordered > tbody > tr > th:first-child,
+  .taboo-table-responsive > .taboo-table-bordered > tfoot > tr > th:first-child,
+  .taboo-table-responsive > .taboo-table-bordered > thead > tr > td:first-child,
+  .taboo-table-responsive > .taboo-table-bordered > tbody > tr > td:first-child,
+  .taboo-table-responsive > .taboo-table-bordered > tfoot > tr > td:first-child {
+    border-left: 0;
+  }
+  .taboo-table-responsive > .taboo-table-bordered > thead > tr > th:last-child,
+  .taboo-table-responsive > .taboo-table-bordered > tbody > tr > th:last-child,
+  .taboo-table-responsive > .taboo-table-bordered > tfoot > tr > th:last-child,
+  .taboo-table-responsive > .taboo-table-bordered > thead > tr > td:last-child,
+  .taboo-table-responsive > .taboo-table-bordered > tbody > tr > td:last-child,
+  .taboo-table-responsive > .taboo-table-bordered > tfoot > tr > td:last-child {
+    border-right: 0;
+  }
+  .taboo-table-responsive > .taboo-table-bordered > tbody > tr:last-child > th,
+  .taboo-table-responsive > .taboo-table-bordered > tfoot > tr:last-child > th,
+  .taboo-table-responsive > .taboo-table-bordered > tbody > tr:last-child > td,
+  .taboo-table-responsive > .taboo-table-bordered > tfoot > tr:last-child > td {
+    border-bottom: 0;
+  }
+}
+

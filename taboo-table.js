@@ -6,7 +6,6 @@ var tabooTable = function (elementName, taboo) {
 		                'text-align', 'font', 'font-size', 'font-family', 'font-weight',
 		                'border', 'border-top', 'border-bottom', 'border-left', 'border-right', 'height',
                         'width'];
-  
   this.taboo = taboo;
   
   // When changes occur in the taboo table, this updates the html 
@@ -56,20 +55,64 @@ var tabooTable = function (elementName, taboo) {
       newElement.style[property] = activeStyle[property];
     });
   }
+
+  var addColumn = this.addColumn = function(columnName, columnData){
+    if (typeof columnName === "undefined") {
+      columnName = 'empty';
+    }
+    if (typeof columnData === 'undefined'){
+      columnData = [];
+    }
+    var newTh = tableElement
+          .querySelector('thead tr')
+          .appendChild(document.createElement('th'));
+    
+    newTh.textContent = columnName;
+    
+    var allTrs = tableElement.querySelectorAll('tbody tr');
+    for (var i = 0; i < allTrs.length; i++) {
+      var tr = allTrs[i];
+      var text;
+      if (columnData[i] == 'undefined'){
+        text = '';
+      } else {
+        text = columnData[i];
+      }
+      var newTd = tr.appendChild(document.createElement('td'));
+      newTd.tabIndex = '1';
+      newTd.textContent = text;
+    }
+  };
+  
+  var deleteColumn = this.deleteColumn = function(index){
+    var th = tableElement.querySelector('thead tr th:nth-of-type(' + index +')'),
+        headTr = tableElement.querySelector('thead tr');
+    headTr.removeChild(th);
+    // remove the tbody rows
+    var allTrs = tableElement.querySelectorAll('tbody tr');
+    for (var i = 0; i < allTrs.length; i++) {
+      var tr = allTrs[i];
+      var td = tr.querySelector(':nth-of-type('+ index +')');
+      tr.removeChild(td);
+    }
+  };
+  
+  var deleteRow = this.deleteRow = function(index){
+    var tr = tableElement.querySelector('tbody tr:nth-of-type('+ index + ')'),
+        tbody = tableElement.querySelector('tbody');
+    tbody.removeChild(tr);
+  };
   
   // 
-  var addRow = function(data){
+  var addRow = this.addRow = function(data){
     var currentTr = tableElement.querySelector('tbody tr'),
-        currentTd;
-    
+        currentTd,
+        newTr = tableElement.querySelector('tbody').appendChild(document.createElement('tr'));
     if (currentTr){
       currentTd = currentTr.querySelector('td');
     }
-    
+    // if data has been passed need to add that to th newly created cells
     if (data){
-      // add row
-      var newTr = tableElement.querySelector('tbody').appendChild(document.createElement('tr'));
-      // add columns
       for (var i = 0; i < data.length; i++){
         var elem = document.createElement('td');
         if (currentTd){
@@ -81,14 +124,13 @@ var tabooTable = function (elementName, taboo) {
       }
       return newTr;
     } else {
-      var newTr = tableElement.querySelector('tbody').appendChild(document.createElement('tr'));
+      // otherwise just create the cells
       if (currentTr){
         for (var i = 0; i < currentTr.children.length; i++){
           var elem = document.createElement('td');
           if (currentTd){
             copyStyle(elem, currentTd);
           };
-
           elem.tabIndex = '1';
           newTr.appendChild(elem);
         }
@@ -97,29 +139,6 @@ var tabooTable = function (elementName, taboo) {
     }
   };
 
-  // 
-  var deleteRow = function(){
-    var rows = tableElement.querySelectorAll('tbody tr');
-    var lastRow = rows[rows.length -1];
-    lastRow.parentNode.removeChild(lastRow);
-  };
-  
-  var addColumn = function(columnHeader){
-    var header = document.createElement('th');
-    header.textContent = columnHeader;
-    tableElement.querySelector('thead tr').appendChild(header);
-    var rows = tableElement.querySelectorAll('tbody tr');
-    for (var i = 0; i < rows.length; i++) {
-      var elem = document.createElement('td');
-      elem.tabIndex = '1';
-      rows[i].appendChild(elem);
-    }
-  };
-  
-  var removeColumn = function(columnHeader){
-    tableElement.querySelector('thead tr');
-  };
-  
   var clearTable = function(){
     tableElement.innerHTML = '<thead><tr></tr></thead><tbody></tbody>';
   };
