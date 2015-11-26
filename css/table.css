@@ -5,7 +5,15 @@
  */
 table {
   background-color: transparent;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
+
+td,
+th {
+  padding: 0;
+}
+
 caption {
   padding-top: 8px;
   padding-bottom: 8px;
@@ -243,4 +251,3 @@ table th[class*="col-"] {
     border-bottom: 0;
   }
 }
-
