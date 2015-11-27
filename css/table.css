@@ -1,3 +1,36 @@
+
+div.buttonsDiv {
+    position: absolute;
+    width: 80px;
+    height: 40px;
+}
+
+div.buttonsDiv p {
+    display:inline-block;
+    margin: 2px;
+    padding: 8px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    font-size: 16pt;
+
+}
+
+div.buttonsDiv p:hover {
+    border: 1px solid rgba(0, 0, 0, 1);
+}
+
+
+div.buttonsDiv p.minus {
+    
+    color:red;
+}
+
+div.buttonsDiv p.plus {
+
+    color:green;
+}
+
+
+
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
