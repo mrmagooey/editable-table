@@ -63,7 +63,7 @@ var tabooTable = function (elementName, taboo) {
     }
     if (options.hasOwnProperty('index')){
       index = options.index;
-    }
+    } 
     if (options.hasOwnProperty('data')){
       data = options.data;
     }
@@ -158,15 +158,21 @@ var tabooTable = function (elementName, taboo) {
   };
 
   // adding rows 
-  var customEvent = document.createEvent('Event');
-  customEvent.initEvent('kill', true, true);
+  var killEvent = document.createEvent('Event');
+  killEvent.initEvent('kill', true, true);
+  var stopKillEvent = document.createEvent('Event');
+  stopKillEvent.initEvent('stopKill', true, true);
   
   var createRowButtons = function(event) {
     var td = event.target,
         tr = td.parentNode,
         table = tr.parentNode;
-    if (tr.querySelector('.buttonsDiv')){
-      return tr.querySelector('.buttonsDiv');
+    
+    // if it already exists, then return early
+    var existingButtonDiv = tr.querySelector('.buttonsDiv');
+    if (existingButtonDiv) {
+      existingButtonDiv.dispatchEvent(stopKillEvent);
+      return existingButtonDiv;
     }
     
     var rect = tr.getBoundingClientRect();
@@ -185,19 +191,14 @@ var tabooTable = function (elementName, taboo) {
     plus.className = 'plus';
     minus.className = 'minus';
     
-    // handlers for killing the buttonDiv
-    var timeoutID, 
-        killing = false;
-    
     var plusClickHandler = function(event){
       // stop the editor from doing its thing
       event.stopPropagation();
       var plusButton = event.target,
           bd = plusButton.parentNode,
           tr = bd.parentNode,
-          tbody = tr.parentNode;
-      console.log(tr);
-      var index = Array.prototype.indexOf.call(tbody.childNodes, tr);
+          tbody = tr.parentNode,
+          index = Array.prototype.indexOf.call(tbody.childNodes, tr);
       addRow({index:index});
     };
     
@@ -217,27 +218,41 @@ var tabooTable = function (elementName, taboo) {
     minus.addEventListener('click', minusClickHandler);
     minus.addEventListener('dblclick', minusClickHandler);
     
+    // handlers for killing the buttonDiv
+    var timeoutID, 
+        killing = false;
+    
     // timed, cancellable kill signal    
     buttonDiv.addEventListener('kill', function() {
+      // if already killing the buttonDiv, don't add another kill timer
       if (killing){
         return;
       } else {
         killing = true;
         timeoutID = window.setTimeout(function(){
           tr.removeChild(buttonDiv);
-        }, 200);
+        }, 50);
       }
     });
-    // if we mouseover then stop the kill
-    buttonDiv.addEventListener('mouseover', function(){
+    
+    buttonDiv.addEventListener('stopKill', function(){
+      console.log('stopKill');
       killing = false;
       window.clearTimeout(timeoutID);
     });
-    // if we mouseout then kill the buttonrow
-    buttonDiv.addEventListener('mouseout', function(){
-      buttonDiv.dispatchEvent(customEvent);
+    
+    // if we mouseover then stop the kill
+    buttonDiv.addEventListener('mouseover', function(){
+      console.log('mouseover');
+      buttonDiv.dispatchEvent(stopKillEvent);
     });
     
+    // if we mouseout then kill the buttonrow
+    buttonDiv.addEventListener('mouseout', function(){
+      buttonDiv.dispatchEvent(killEvent);
+    });
+    
+    // add the button div to the row
     tr.appendChild(buttonDiv);
     return buttonDiv;
   };
@@ -247,7 +262,7 @@ var tabooTable = function (elementName, taboo) {
         tr = td.parentNode;
     var buttonsDiv = tr.querySelector('.buttonsDiv');
     if (buttonsDiv) {
-      buttonsDiv.dispatchEvent(customEvent);
+      buttonsDiv.dispatchEvent(killEvent);
     }
   };
   
