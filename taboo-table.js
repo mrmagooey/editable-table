@@ -28,8 +28,8 @@ var tabooTable = function (elementName, taboo) {
   function syncToTaboo(){
     taboo.clear({silent:true});
     var headers = tableElement.querySelector('thead tr').children;
-    for (var i = 0; i < headers.length; i++){
-      taboo.addColumns([headers[i].textContent], {silent:true});
+    for (var i = 0; i < headers.length; i++) {
+      taboo.addColumns([headers[i].querySelector('span').textContent], {silent:true});
     }
     var rows = tableElement.querySelectorAll('tbody tr');
     for (i = 0; i < rows.length; i++){
@@ -121,8 +121,10 @@ var tabooTable = function (elementName, taboo) {
     }
     var newTh = tableElement
           .querySelector('thead tr')
-          .appendChild(document.createElement('th'));
-    newTh.textContent = columnName;
+          .appendChild(document.createElement('th')),
+        newSpan = newTh.appendChild(document.createElement('span'));
+    
+    newSpan.textContent = columnName;
     var allTrs = tableElement.querySelectorAll('tbody tr');
     for (var i = 0; i < allTrs.length; i++) {
       var tr = allTrs[i];
