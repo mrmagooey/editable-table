@@ -8,28 +8,25 @@ div.buttonsDiv {
 div.buttonsDiv p {
     display:inline-block;
     margin: 2px;
-    padding: 8px;
+    padding: 4px;
     border: 1px solid rgba(0, 0, 0, 0);
     font-size: 16pt;
-
 }
 
 div.buttonsDiv p:hover {
-    border: 1px solid rgba(0, 0, 0, 1);
+    border-top: 1px solid grey;
+    border-left: 1px solid grey;
+    border-right: 2px solid grey;
+    border-bottom: 2px solid grey;
 }
 
-
 div.buttonsDiv p.minus {
-    
     color:red;
 }
 
 div.buttonsDiv p.plus {
-
     color:green;
 }
-
-
 
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
