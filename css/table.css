@@ -1,16 +1,24 @@
 
 div.buttonsDiv {
     position: absolute;
-    width: 80px;
-    height: 40px;
+
+    margin: 0;
+    padding:0;
 }
 
 div.buttonsDiv p {
     display:inline-block;
-    margin: 2px;
-    padding: 4px;
-    border: 1px solid rgba(0, 0, 0, 0);
+    margin: 0;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0);
+    border-left: 1px solid rgba(0, 0, 0, 0);
+    border-right: 2px solid rgba(0, 0, 0, 0);
+    border-bottom: 2px solid rgba(0, 0, 0, 0);
     font-size: 16pt;
+    font-weight: normal;
+    line-height:normal;
 }
 
 div.buttonsDiv p:hover {
@@ -20,12 +28,30 @@ div.buttonsDiv p:hover {
     border-bottom: 2px solid grey;
 }
 
-div.buttonsDiv p.minus {
+tbody div.buttonsDiv p.minus {
     color:red;
+    padding-bottom: 5px;
+    padding-left: 3px;
+    padding-right: 3px;    
 }
 
-div.buttonsDiv p.plus {
+tbody div.buttonsDiv p.plus {
     color:green;
+    padding-left: 5px;
+    padding-bottom: 5px;
+}
+
+thead div.buttonsDiv p.minus {
+    color:red;
+    padding-bottom: 5px;
+    padding-left: 3px;
+    padding-right: 3px;    
+}
+
+thead div.buttonsDiv p.plus {
+    color:green;
+    padding-left: 5px;
+    padding-bottom: 5px;
 }
 
 /*!

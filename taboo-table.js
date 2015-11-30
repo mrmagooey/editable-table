@@ -92,7 +92,7 @@ var tabooTable = function (elementName, taboo) {
       currentTd = currentTr.querySelector('td');
     }
     // add the event handlers for the buttons
-    rowButtons(newTr);
+    addRowButtonsEvents(newTr);
     // create the rows
     var elem;
     var headers = tableElement.querySelector('thead tr').children;
@@ -123,12 +123,14 @@ var tabooTable = function (elementName, taboo) {
           .querySelector('thead tr')
           .appendChild(document.createElement('th')),
         newSpan = newTh.appendChild(document.createElement('span'));
-    
     newSpan.textContent = columnName;
+    
+    // add rows
     var allTrs = tableElement.querySelectorAll('tbody tr');
     for (var i = 0; i < allTrs.length; i++) {
-      var tr = allTrs[i];
-      var text;
+      var tr = allTrs[i],
+          text;
+      // add data if we have it
       if (columnData[i] == 'undefined'){
         text = '';
       } else {
@@ -138,6 +140,7 @@ var tabooTable = function (elementName, taboo) {
       newTd.tabIndex = '1';
       newTd.textContent = text;
     }
+    addColumnButtonsEvents(newTh);
   };
   
   var deleteColumn = this.deleteColumn = function(index){
@@ -169,30 +172,27 @@ var tabooTable = function (elementName, taboo) {
     var td = event.target,
         tr = td.parentNode,
         table = tr.parentNode;
-    
     // if it already exists, then return early
     var existingButtonDiv = tr.querySelector('.buttonsDiv');
     if (existingButtonDiv) {
       existingButtonDiv.dispatchEvent(stopKillEvent);
       return existingButtonDiv;
     }
-    
     var rect = tr.getBoundingClientRect();
     var buttonDiv = document.createElement('div'),
         plus = document.createElement('p'),
         minus = document.createElement('p'),
         buttonDivWidth = 20;
-    
     buttonDiv.className = 'buttonsDiv';
     buttonDiv.appendChild(plus);
     buttonDiv.appendChild(minus);
-    buttonDiv.style.top = rect.top + document.body.scrollTop + 'px';
-    buttonDiv.style.left = (rect.right + document.body.scrollLeft - buttonDivWidth - 60) + 'px';
+    buttonDiv.style.top = (rect.top + document.body.scrollTop + 5) + 'px';
+    buttonDiv.style.left = (rect.right + document.body.scrollLeft - buttonDivWidth - 40) + 'px';
     plus.textContent = '+';
     minus.textContent = '—';
     plus.className = 'plus';
     minus.className = 'minus';
-    
+    // handlers for clicks
     var plusClickHandler = function(event){
       // stop the editor from doing its thing
       event.stopPropagation();
@@ -202,8 +202,8 @@ var tabooTable = function (elementName, taboo) {
           tbody = tr.parentNode,
           index = Array.prototype.indexOf.call(tbody.childNodes, tr);
       addRow({index:index});
+      syncToTaboo();
     };
-    
     var minusClickHandler = function(event){
       // stop the editor from doing its thing
       event.stopPropagation();
@@ -213,17 +213,15 @@ var tabooTable = function (elementName, taboo) {
           tr = bd.parentNode,
           tbody = tr.parentNode;
       tbody.removeChild(tr);
+      syncToTaboo();
     };
-    
     plus.addEventListener('click', plusClickHandler);
     plus.addEventListener('dblclick', plusClickHandler);
     minus.addEventListener('click', minusClickHandler);
     minus.addEventListener('dblclick', minusClickHandler);
-    
     // handlers for killing the buttonDiv
     var timeoutID, 
         killing = false;
-    
     // timed, cancellable kill signal    
     buttonDiv.addEventListener('kill', function() {
       // if already killing the buttonDiv, don't add another kill timer
@@ -236,24 +234,18 @@ var tabooTable = function (elementName, taboo) {
         }, 50);
       }
     });
-    
     buttonDiv.addEventListener('stopKill', function(){
-      console.log('stopKill');
       killing = false;
       window.clearTimeout(timeoutID);
     });
-    
     // if we mouseover then stop the kill
     buttonDiv.addEventListener('mouseover', function(){
-      console.log('mouseover');
       buttonDiv.dispatchEvent(stopKillEvent);
     });
-    
     // if we mouseout then kill the buttonrow
     buttonDiv.addEventListener('mouseout', function(){
       buttonDiv.dispatchEvent(killEvent);
     });
-    
     // add the button div to the row
     tr.appendChild(buttonDiv);
     return buttonDiv;
@@ -268,7 +260,7 @@ var tabooTable = function (elementName, taboo) {
     }
   };
   
-  var rowButtons = function(tr){
+  var addRowButtonsEvents = function(tr){
     // create buttons
     tr.addEventListener('mouseover', createRowButtons);
     // remove buttons
@@ -276,7 +268,117 @@ var tabooTable = function (elementName, taboo) {
     tr.addEventListener('click', removeRowButtons);
   };
   
-  // 
+  var createColumnButtons = function(event) {
+    var th = event.target,
+        tr = th.parentNode,
+        thead = tr.parentNode;
+    
+    if (th.nodeName !== 'TH'){
+      return;
+    }
+    // if it already exists, then return early
+    var existingButtonDiv = th.querySelector('.buttonsDiv');
+    if (existingButtonDiv) {
+      existingButtonDiv.dispatchEvent(stopKillEvent);
+      return existingButtonDiv;
+    }
+    
+    var rect = th.getBoundingClientRect();
+    var buttonDiv = document.createElement('div'),
+        plus = document.createElement('p'),
+        minus = document.createElement('p'),
+        buttonDivWidth = 20;
+    
+    buttonDiv.className = 'buttonsDiv';
+    buttonDiv.appendChild(plus);
+    buttonDiv.appendChild(minus);
+    buttonDiv.style.top = (rect.top + document.body.scrollTop + 5) + 'px';
+    buttonDiv.style.left = (rect.right + document.body.scrollLeft - buttonDivWidth - 40) + 'px';
+    plus.textContent = '+';
+    minus.textContent = '—';
+    plus.className = 'plus';
+    minus.className = 'minus';
+    
+    var plusClickHandler = function(event){
+      // stop the editor from doing its thing
+      event.stopPropagation();
+      var plusButton = event.target,
+          bd = plusButton.parentNode,
+          tr = bd.parentNode,
+          tbody = tr.parentNode,
+          index = Array.prototype.indexOf.call(tbody.childNodes, tr);
+      addColumn("New Column");
+      syncToTaboo();
+    };
+    
+    var minusClickHandler = function(event){
+      // stop the editor from doing its thing
+      event.stopPropagation();
+      // do the things
+      var minusButton = event.target,
+          bd = minusButton.parentNode,
+          th = bd.parentNode,
+          thead = th.parentNode,
+          index = Array.prototype.indexOf.call(thead.childNodes, th);
+      deleteColumn(index);
+      syncToTaboo();
+    };
+    
+    plus.addEventListener('click', plusClickHandler);
+    plus.addEventListener('dblclick', plusClickHandler);
+    minus.addEventListener('click', minusClickHandler);
+    minus.addEventListener('dblclick', minusClickHandler);
+    
+    // handlers for killing the buttonDiv
+    var timeoutID, 
+        killing = false;
+    // timed, cancellable kill signal    
+    buttonDiv.addEventListener('kill', function() {
+      // if already killing the buttonDiv, don't add another kill timer
+      if (killing){
+        return;
+      } else {
+        killing = true;
+        timeoutID = window.setTimeout(function(){
+          th.removeChild(buttonDiv);
+        }, 50);
+      }
+    });
+    
+    buttonDiv.addEventListener('stopKill', function(){
+      killing = false;
+      window.clearTimeout(timeoutID);
+    });
+    
+    // if we mouseover then stop the kill
+    buttonDiv.addEventListener('mouseover', function(){
+      buttonDiv.dispatchEvent(stopKillEvent);
+    });
+    
+    // if we mouseout then kill the buttonrow
+    buttonDiv.addEventListener('mouseout', function(){
+      buttonDiv.dispatchEvent(killEvent);
+    });
+    
+    // add the button div to the row
+    th.appendChild(buttonDiv);
+    return buttonDiv;
+  };
+  
+  var removeColumnButtons = function(event) {
+    var th = event.target,
+        tr = th.parentNode;
+    var buttonsDiv = th.querySelector('.buttonsDiv');
+    if (buttonsDiv) {
+      buttonsDiv.dispatchEvent(killEvent);
+    }
+  };
+  
+  var addColumnButtonsEvents = function(th){
+    th.addEventListener('mouseover', createColumnButtons);
+    th.addEventListener('mouseout', removeColumnButtons);
+    th.addEventListener('click', removeColumnButtons);
+  };
 
   var clearTable = function(){
     tableElement.innerHTML = '<thead><tr></tr></thead><tbody></tbody>';
