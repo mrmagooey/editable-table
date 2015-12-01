@@ -1,4 +1,5 @@
 
+
 var tabooTable = function (elementName, taboo) {
   var tableElement = document.querySelector(elementName),
       _this = this,
@@ -36,7 +37,7 @@ var tabooTable = function (elementName, taboo) {
       var row = rows[i];
       var cells = [];
       for (var j = 0; j < row.children.length; j++){
-        cells.push(row.children[j].textContent);
+        cells.push(row.children[j].querySelector('span').textContent);
       }
       taboo.addRow(cells, {silent:true});
     }
@@ -67,47 +68,47 @@ var tabooTable = function (elementName, taboo) {
     if (options.hasOwnProperty('data')){
       data = options.data;
     }
-
-    var currentTr = tableElement.querySelector('tbody tr'),
+    var existingTr = tableElement.querySelector('tbody tr'),
+        existingTd = tableElement.querySelector('tbody td'),
         tbody = tableElement.querySelector('tbody'),
-        currentTd,
         newTr;
-    
-    // fucked if i know why
+
     index = index + 1;
     // if no index, append at the end, otherwise create at index point
     if (!index) {
       newTr = tbody.appendChild(document.createElement('tr'));
+      if (existingTr){
+        copyStyle(newTr, existingTr);
+      }
     } else {
       var before = tbody.querySelector('tr:nth-of-type(' + index +')');
-      if (typeof before === 'undefined'){
+      if (typeof before === null){
         newTr = tbody.appendChild(document.createElement('tr'));
       } else {
         newTr = tbody.insertBefore(document.createElement('tr'), before);
       }
     }
-    // check if there are any rows
-    // if so get an existing cell so we can later copy the style
-    if (currentTr){
-      currentTd = currentTr.querySelector('td');
-    }
     // add the event handlers for the buttons
     addRowButtonsEvents(newTr);
     // create the rows
-    var elem;
-    var headers = tableElement.querySelector('thead tr').children;
-    for (var i = 0; i < headers.length; i++){
-      elem = document.createElement('td');
-      if (currentTd){
-        copyStyle(elem, currentTd);
+    var td,
+        span,
+        headers = tableElement.querySelector('thead tr').children;
+    for (var i = 0; i < headers.length; i++) {
+      td = document.createElement('td');
+      span = document.createElement('span');
+      td.appendChild(span);
+      if (existingTd){
+        copyStyle(td, existingTd);
       };
-      // if data has been passed need to add that to th newly created cells
+      // if data has been passed need to add that to the newly created cells
       if (data) {
-        elem.textContent = data[i];
+        span.textContent = data[i];
+      } else {
+        span.textContent = "";
       }
-      elem.tabIndex = '1';
-      newTr.appendChild(elem);
-      
+      td.tabIndex = '1';
+      newTr.appendChild(td);
     }
     return newTr;
   };
@@ -122,11 +123,10 @@ var tabooTable = function (elementName, taboo) {
     var newTh = tableElement
           .querySelector('thead tr')
           .appendChild(document.createElement('th')),
-        newSpan = newTh.appendChild(document.createElement('span'));
+        newSpan = newTh.appendChild(document.createElement('span')),
+        allTrs = tableElement.querySelectorAll('tbody tr');
     newSpan.textContent = columnName;
-    
     // add rows
-    var allTrs = tableElement.querySelectorAll('tbody tr');
     for (var i = 0; i < allTrs.length; i++) {
       var tr = allTrs[i],
           text;
@@ -136,9 +136,12 @@ var tabooTable = function (elementName, taboo) {
       } else {
         text = columnData[i];
       }
-      var newTd = tr.appendChild(document.createElement('td'));
+      var newTd = document.createElement('td'),
+          span = document.createElement('span');
+      newTd.appendChild(span);
+      tr.appendChild(newTd);
       newTd.tabIndex = '1';
-      newTd.textContent = text;
+      span.textContent = text;
     }
     addColumnButtonsEvents(newTh);
   };
@@ -171,18 +174,25 @@ var tabooTable = function (elementName, taboo) {
   var createRowButtons = function(event) {
     var td = event.target,
         tr = td.parentNode,
-        table = tr.parentNode;
+        table = tr.parentNode,
+        lastTd = tr.lastChild;
+    
     // if it already exists, then return early
-    var existingButtonDiv = tr.querySelector('.buttonsDiv');
+    var existingButtonDiv = lastTd.querySelector('.buttonWrapper');
     if (existingButtonDiv) {
       existingButtonDiv.dispatchEvent(stopKillEvent);
       return existingButtonDiv;
     }
+    
     var rect = tr.getBoundingClientRect();
-    var buttonDiv = document.createElement('div'),
+    var buttonWrapper = document.createElement('div'),
+        buttonDiv = document.createElement('div'),
         plus = document.createElement('p'),
         minus = document.createElement('p'),
         buttonDivWidth = 20;
+    
+    buttonWrapper.className = 'buttonWrapper';
+    buttonWrapper.appendChild(buttonDiv);
     buttonDiv.className = 'buttonsDiv';
     buttonDiv.appendChild(plus);
     buttonDiv.appendChild(minus);
@@ -219,42 +229,46 @@ var tabooTable = function (elementName, taboo) {
     plus.addEventListener('dblclick', plusClickHandler);
     minus.addEventListener('click', minusClickHandler);
     minus.addEventListener('dblclick', minusClickHandler);
+    
     // handlers for killing the buttonDiv
     var timeoutID, 
         killing = false;
     // timed, cancellable kill signal    
-    buttonDiv.addEventListener('kill', function() {
+    buttonWrapper.addEventListener('kill', function() {
+      console.log('kill');
       // if already killing the buttonDiv, don't add another kill timer
       if (killing){
         return;
       } else {
         killing = true;
         timeoutID = window.setTimeout(function(){
-          tr.removeChild(buttonDiv);
+          lastTd.removeChild(buttonWrapper);
         }, 50);
       }
     });
-    buttonDiv.addEventListener('stopKill', function(){
+    buttonWrapper.addEventListener('stopKill', function(){
       killing = false;
       window.clearTimeout(timeoutID);
     });
     // if we mouseover then stop the kill
-    buttonDiv.addEventListener('mouseover', function(){
-      buttonDiv.dispatchEvent(stopKillEvent);
+    buttonWrapper.addEventListener('mouseover', function(){
+      buttonWrapper.dispatchEvent(stopKillEvent);
     });
     // if we mouseout then kill the buttonrow
-    buttonDiv.addEventListener('mouseout', function(){
-      buttonDiv.dispatchEvent(killEvent);
+    buttonWrapper.addEventListener('mouseout', function(){
+      buttonWrapper.dispatchEvent(killEvent);
     });
+    
     // add the button div to the row
-    tr.appendChild(buttonDiv);
-    return buttonDiv;
+    lastTd.appendChild(buttonWrapper);
+    return buttonWrapper;
   };
   
-  var removeRowButtons = function(event){
+  var removeRowButtons = function(event) {
     var td = event.target,
-        tr = td.parentNode;
-    var buttonsDiv = tr.querySelector('.buttonsDiv');
+        tr = td.parentNode,
+        lastTd = tr.lastChild;
+    var buttonsDiv = lastTd.querySelector('.buttonWrapper');
     if (buttonsDiv) {
       buttonsDiv.dispatchEvent(killEvent);
     }
@@ -412,7 +426,7 @@ var tabooTable = function (elementName, taboo) {
         return;
       }
 	  if (active) {
-		editor.value = active.textContent;
+		editor.value = active.querySelector('span').textContent;
         var activeStyle = window.getComputedStyle(active);
         activeOptions.cloneProperties.forEach(function(property){
           editor.style[property] = activeStyle[property];
@@ -428,10 +442,10 @@ var tabooTable = function (elementName, taboo) {
     
     var setActiveText = function () {
       var newText = editor.value;
-	  if (active.textContent === newText || editor.classList.contains('error')) {
+	  if (active.querySelector('span').textContent === newText || editor.classList.contains('error')) {
 		return true;
 	  } else {
-        active.textContent = editor.value;
+        active.querySelector('span').textContent = editor.value;
       }
       // update the taboo instance to which this table is linked
       syncToTaboo();
@@ -492,7 +506,7 @@ var tabooTable = function (elementName, taboo) {
         move.focus();
 	  } else if (e.which === ESC) {
         // ignore typed values, hide input editor
-		editor.value = active.textContent;
+		editor.value = active.querySelector('span').textContent;
 		e.preventDefault();
 		e.stopPropagation();
 		editor.style.display = 'none';
@@ -553,11 +567,11 @@ var tabooTable = function (elementName, taboo) {
 	  }
 	});
     
-    // add tabIndex to each td so it can be focused
-    var tdElements = element.getElementsByTagName('td');
-    for (var i = 0; i < tdElements.length; i++){
-      tdElements[i].tabIndex = '1';
-    }
+    // // add tabIndex to each td so it can be focused
+    // var tdElements = element.getElementsByTagName('td');
+    // for (var i = 0; i < tdElements.length; i++){
+    //   tdElements[i].tabIndex = '1';
+    // }
     
 	window.addEventListener('resize', function () {
 	  if (editor.style.display !== 'none') {
