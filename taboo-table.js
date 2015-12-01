@@ -1,5 +1,4 @@
 
-
 var tabooTable = function (elementName, taboo) {
   var tableElement = document.querySelector(elementName),
       _this = this,
@@ -72,7 +71,6 @@ var tabooTable = function (elementName, taboo) {
         existingTd = tableElement.querySelector('tbody td'),
         tbody = tableElement.querySelector('tbody'),
         newTr;
-
     index = index + 1;
     // if no index, append at the end, otherwise create at index point
     if (!index) {
@@ -172,11 +170,17 @@ var tabooTable = function (elementName, taboo) {
   stopKillEvent.initEvent('stopKill', true, true);
   
   var createRowButtons = function(event) {
-    var td = event.target,
-        tr = td.parentNode,
+    var td;
+    if (event.target.tagName === "SPAN"){
+      td = event.target.parentNode;
+    } else if (event.target.tagName === "TD"){
+      td = event.target;
+    } else {
+      return undefined;
+    }
+    var tr = td.parentNode,
         table = tr.parentNode,
         lastTd = tr.lastChild;
-    
     // if it already exists, then return early
     var existingButtonDiv = lastTd.querySelector('.buttonWrapper');
     if (existingButtonDiv) {
@@ -207,20 +211,26 @@ var tabooTable = function (elementName, taboo) {
       event.stopPropagation();
       var plusButton = event.target,
           bd = plusButton.parentNode,
-          tr = bd.parentNode,
+          wrappingDiv = bd.parentNode,
+          td = wrappingDiv.parentNode,
+          tr = td.parentNode,
           tbody = tr.parentNode,
           index = Array.prototype.indexOf.call(tbody.childNodes, tr);
+      console.log(tr);
+      console.log(index);
       addRow({index:index});
       syncToTaboo();
     };
     var minusClickHandler = function(event){
       // stop the editor from doing its thing
       event.stopPropagation();
-      // do the things
       var minusButton = event.target,
           bd = minusButton.parentNode,
-          tr = bd.parentNode,
-          tbody = tr.parentNode;
+          wrappingDiv = bd.parentNode,
+          td = wrappingDiv.parentNode,
+          tr = td.parentNode,
+          tbody = tr.parentNode,
+          index = Array.prototype.indexOf.call(tbody.childNodes, tr);
       tbody.removeChild(tr);
       syncToTaboo();
     };
@@ -279,8 +289,15 @@ var tabooTable = function (elementName, taboo) {
   };
   
   var createColumnButtons = function(event) {
-    var th = event.target,
-        tr = th.parentNode,
+    var th;
+    if (event.target.tagName === "TH"){
+      th = event.target;
+    } else if (event.target.tagName === "SPAN") {
+      th = event.target.parentNode;
+    } else {
+      return;
+    }
+    var tr = th.parentNode,
         thead = tr.parentNode;
     
     if (th.nodeName !== 'TH'){
