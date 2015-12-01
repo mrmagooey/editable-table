@@ -183,7 +183,6 @@ var tabooTable = function (elementName, taboo) {
       existingButtonDiv.dispatchEvent(stopKillEvent);
       return existingButtonDiv;
     }
-    
     var rect = tr.getBoundingClientRect();
     var buttonWrapper = document.createElement('div'),
         buttonDiv = document.createElement('div'),
@@ -229,13 +228,11 @@ var tabooTable = function (elementName, taboo) {
     plus.addEventListener('dblclick', plusClickHandler);
     minus.addEventListener('click', minusClickHandler);
     minus.addEventListener('dblclick', minusClickHandler);
-    
     // handlers for killing the buttonDiv
     var timeoutID, 
         killing = false;
     // timed, cancellable kill signal    
     buttonWrapper.addEventListener('kill', function() {
-      console.log('kill');
       // if already killing the buttonDiv, don't add another kill timer
       if (killing){
         return;
@@ -258,7 +255,6 @@ var tabooTable = function (elementName, taboo) {
     buttonWrapper.addEventListener('mouseout', function(){
       buttonWrapper.dispatchEvent(killEvent);
     });
-    
     // add the button div to the row
     lastTd.appendChild(buttonWrapper);
     return buttonWrapper;
@@ -296,13 +292,11 @@ var tabooTable = function (elementName, taboo) {
       existingButtonDiv.dispatchEvent(stopKillEvent);
       return existingButtonDiv;
     }
-    
     var rect = th.getBoundingClientRect();
     var buttonDiv = document.createElement('div'),
         plus = document.createElement('p'),
         minus = document.createElement('p'),
         buttonDivWidth = 20;
-    
     buttonDiv.className = 'buttonsDiv';
     buttonDiv.appendChild(plus);
     buttonDiv.appendChild(minus);
@@ -312,7 +306,6 @@ var tabooTable = function (elementName, taboo) {
     minus.textContent = '—';
     plus.className = 'plus';
     minus.className = 'minus';
-    
     var plusClickHandler = function(event){
       // stop the editor from doing its thing
       event.stopPropagation();
@@ -359,7 +352,7 @@ var tabooTable = function (elementName, taboo) {
       }
     });
     
-    buttonDiv.addEventListener('stopKill', function(){
+    buttonDiv.addEventListener('stopKill', function() {
       killing = false;
       window.clearTimeout(timeoutID);
     });
