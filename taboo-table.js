@@ -8,6 +8,11 @@ var tabooTable = function (elementName, taboo) {
                         'width'];
   this.taboo = taboo;
   
+  if (tableElement === null) {
+    console.log("Taboo-Table Selector " + elementName + " does not exist");
+    return;
+  }
+  
   // When changes occur in the taboo table, this updates the html 
   function syncToHtml(taboo){
     clearTable();
