@@ -1,4 +1,9 @@
 
+td span {
+    /* this forces the new rows to be correctly sized as if they had contents */
+    padding-left:1px;
+}
+
 div.buttonsDiv {
     position: absolute;
     margin: 0;
