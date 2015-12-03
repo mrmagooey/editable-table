@@ -1,5 +1,17 @@
 
-var tabooTable = function (elementName, taboo) {
+var tabooTable = function (elementName, taboo, userOptions) {
+  var defaultOptions = {
+    addRows: true,
+    addColumns: true,
+    editable: true,
+  }, 
+      globalOptions = {};
+  if (_.isObject(userOptions)){
+    _.extend(globalOptions, defaultOptions, userOptions);
+  } else {
+    globalOptions = defaultOptions;
+  }
+  
   var tableElement = document.querySelector(elementName),
       _this = this,
       cloneProperties= ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
@@ -91,8 +103,6 @@ var tabooTable = function (elementName, taboo) {
         newTr = tbody.insertBefore(document.createElement('tr'), before);
       }
     }
-    // add the event handlers for the buttons
-    addRowButtonsEvents(newTr);
     // create the rows
     var td,
         span,
@@ -113,23 +123,39 @@ var tabooTable = function (elementName, taboo) {
       td.tabIndex = '1';
       newTr.appendChild(td);
     }
+    // add the event handlers for the buttons
+    if (globalOptions.addRows) {
+      addRowButtonsEvents(newTr);
+    }
     return newTr;
   };
 
-  var addColumn = this.addColumn = function(columnName, columnData){
+  var addColumn = this.addColumn = function(columnName, columnData, index){
     if (typeof columnName === "undefined") {
       columnName = 'empty';
     }
     if (typeof columnData === 'undefined'){
       columnData = [];
     }
-    var newTh = tableElement
-          .querySelector('thead tr')
-          .appendChild(document.createElement('th')),
-        newSpan = newTh.appendChild(document.createElement('span')),
+    // insert column heading
+    var newTh;
+    if (typeof index === 'number'){
+      index = index + 1;
+      console.log(index);
+      var before = tableElement.querySelector('thead tr :nth-of-type('+ index +')');
+      console.log(before);
+      if (before === null){
+        newTh = tableElement.querySelector('thead tr').appendChild(document.createElement('th'));        
+      } else {
+        newTh = tableElement.querySelector('thead tr').insertBefore(document.createElement('th'), before);
+      }
+    } else {
+      newTh = tableElement.querySelector('thead tr').appendChild(document.createElement('th'));        
+    }
+    // add rows
+    var newSpan = newTh.appendChild(document.createElement('span')),
         allTrs = tableElement.querySelectorAll('tbody tr');
     newSpan.textContent = columnName;
-    // add rows
     for (var i = 0; i < allTrs.length; i++) {
       var tr = allTrs[i],
           text;
@@ -141,12 +167,20 @@ var tabooTable = function (elementName, taboo) {
       }
       var newTd = document.createElement('td'),
           span = document.createElement('span');
-      newTd.appendChild(span);
-      tr.appendChild(newTd);
+      newTd.appendChild(span);      
+      if (typeof index === 'number'){
+        var beforeTd = tr.querySelector(':nth-of-type('+ index + ')');
+        console.log(beforeTd);
+        tr.insertBefore(newTd, beforeTd);
+      } else {
+        tr.appendChild(newTd);  
+      }
       newTd.tabIndex = '1';
       span.textContent = text;
     }
-    addColumnButtonsEvents(newTh);
+    if (globalOptions.addColumns) {
+      addColumnButtonsEvents(newTh);
+    }
   };
   
   var deleteColumn = this.deleteColumn = function(index){
@@ -300,13 +334,12 @@ var tabooTable = function (elementName, taboo) {
     } else if (event.target.tagName === "SPAN") {
       th = event.target.parentNode;
     } else {
-      return;
+      return undefined;
     }
     var tr = th.parentNode,
         thead = tr.parentNode;
-    
     if (th.nodeName !== 'TH'){
-      return;
+      return undefined;
     }
     // if it already exists, then return early
     var existingButtonDiv = th.querySelector('.buttonsDiv');
@@ -336,7 +369,7 @@ var tabooTable = function (elementName, taboo) {
           tr = bd.parentNode,
           tbody = tr.parentNode,
           index = Array.prototype.indexOf.call(tbody.childNodes, tr);
-      addColumn("New Column");
+      addColumn("New Column", undefined, index);
       syncToTaboo();
     };
     
@@ -600,8 +633,9 @@ var tabooTable = function (elementName, taboo) {
   };
   
   // init
-  
-  var e = new Editor(elementName);
+  if (globalOptions.editable){
+    var e = new Editor(elementName);
+  }
   syncToHtml(taboo);
   registerCallbacks();
 
