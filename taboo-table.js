@@ -120,7 +120,9 @@ var tabooTable = function (elementName, taboo, userOptions) {
       } else {
         span.textContent = "";
       }
-      td.tabIndex = '1';
+      if (globalOptions.editable){
+        td.tabIndex = '1';
+      }
       newTr.appendChild(td);
     }
     // add the event handlers for the buttons
@@ -175,7 +177,9 @@ var tabooTable = function (elementName, taboo, userOptions) {
       } else {
         tr.appendChild(newTd);  
       }
-      newTd.tabIndex = '1';
+      if (globalOptions.editable){
+        newTd.tabIndex = '1';
+      }
       span.textContent = text;
     }
     if (globalOptions.addColumns) {
