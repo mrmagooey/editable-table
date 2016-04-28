@@ -1,6 +1,6 @@
 {
   "name": "taboo-table",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "html tables for taboo",
   "main": "taboo-table.js",
   "directories": {
@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/mrmagooey/taboo-table#readme",
   "dependencies": {
-    "taboo": "^0.1.2"
+    "taboo": "^0.2.1"
   }
 }
