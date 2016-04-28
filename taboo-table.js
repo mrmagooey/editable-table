@@ -143,9 +143,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
     var newTh;
     if (typeof index === 'number'){
       index = index + 1;
-      console.log(index);
       var before = tableElement.querySelector('thead tr :nth-of-type('+ index +')');
-      console.log(before);
       if (before === null){
         newTh = tableElement.querySelector('thead tr').appendChild(document.createElement('th'));        
       } else {
@@ -172,7 +170,6 @@ var tabooTable = function (elementName, taboo, userOptions) {
       newTd.appendChild(span);      
       if (typeof index === 'number'){
         var beforeTd = tr.querySelector(':nth-of-type('+ index + ')');
-        console.log(beforeTd);
         tr.insertBefore(newTd, beforeTd);
       } else {
         tr.appendChild(newTd);  
@@ -478,7 +475,11 @@ var tabooTable = function (elementName, taboo, userOptions) {
         return;
       }
 	  if (active) {
-		editor.value = active.querySelector('span').textContent;
+        if (active.tagName === "SPAN"){
+          active = active.parentNode;
+        };
+        editor.value = active.querySelector('span').textContent;
+
         var activeStyle = window.getComputedStyle(active);
         activeOptions.cloneProperties.forEach(function(property){
           editor.style[property] = activeStyle[property];
@@ -558,7 +559,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
         move.focus();
 	  } else if (e.which === ESC) {
         // ignore typed values, hide input editor
-		editor.value = active.querySelector('span').textContent;
+        editor.value = active.querySelector('span').textContent;
 		e.preventDefault();
 		e.stopPropagation();
 		editor.style.display = 'none';

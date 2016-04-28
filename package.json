@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/mrmagooey/taboo-table/issues"
   },
-  "homepage": "https://github.com/mrmagooey/taboo-table#readme"
+  "homepage": "https://github.com/mrmagooey/taboo-table#readme",
+  "dependencies": {
+    "taboo": "^0.1.2"
+  }
 }
