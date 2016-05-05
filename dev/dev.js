@@ -2,15 +2,21 @@
 
 var taboo1 = new Taboo();
 taboo1.addRows([{col1:'a', col3:'b'}, {col1:'c', col3:'d'}]);
-console.log(taboo1.print());
 var table1 = new tabooTable('#table1', taboo1);
 taboo1.addRows([{col1:'e', col3:'f'}, {col1:'g', col3:'h'}]);
-console.log(taboo1.print());
 
-// var taboo2 = new Taboo();
-// taboo2.addRows([{col1:'a', col2:'b'}, {col1:'c', col2:'asdf'}]);
-// var table2 = new tabooTable('#test2', taboo2);
-// taboo2.addRows([{col1:'cat', col2:'dog'}, {col1:'horse', col2:'elephant'}]);
+var taboo2 = new Taboo();
+taboo2.addRows([{col1:'a', col2:'b'}, {col1:'c', col2:'asdf'}]);
+var table2 = new tabooTable('#table2', taboo2, {addRowsButtons: false,
+                                                addColumnsButtons: false});
+taboo2.addRows([{col1:'cat', col2:'dog'}, {col1:'horse', col2:'elephant'}]);
+
+var taboo3 = new Taboo();
+taboo3.addRows([{col1:'a', col2:'b'}, {col1:'c', col2:'asdf'}]);
+var table3 = new tabooTable('#table3', taboo2, {editableRows: false,
+                                                editableRowHeader: false});
+taboo3.addRows([{col1:'cat', col2:'dog'}, {col1:'horse', col2:'elephant'}]);
+
 
 // var leftTaboo = taboo1.leftJoin('col1', taboo2, 'col1');
 // var leftTable = new tabooTable('#join', leftTaboo);
