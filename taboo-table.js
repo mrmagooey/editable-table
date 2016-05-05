@@ -185,14 +185,14 @@ var tabooTable = function (elementName, taboo, userOptions) {
   };
   
   var deleteColumn = this.deleteColumn = function(index){
-    var th = tableElement.querySelector('thead tr th:nth-of-type(' + index +')'),
+    var th = tableElement.querySelector('thead tr th:nth-of-type(' + (index + 1) +')'),
         headTr = tableElement.querySelector('thead tr');
     headTr.removeChild(th);
     // remove the tbody rows
     var allTrs = tableElement.querySelectorAll('tbody tr');
     for (var i = 0; i < allTrs.length; i++) {
       var tr = allTrs[i];
-      var td = tr.querySelector(':nth-of-type('+ index +')');
+      var td = tr.querySelector(':nth-of-type('+ (index + 1) +')');
       tr.removeChild(td);
     }
   };
