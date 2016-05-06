@@ -13,9 +13,14 @@ taboo2.addRows([{col1:'cat', col2:'dog'}, {col1:'horse', col2:'elephant'}]);
 
 var taboo3 = new Taboo();
 taboo3.addRows([{col1:'a', col2:'b'}, {col1:'c', col2:'asdf'}]);
-var table3 = new tabooTable('#table3', taboo2, {editableRows: false,
+var table3 = new tabooTable('#table3', taboo3, {editableRows: false,
                                                 editableRowHeader: false});
 taboo3.addRows([{col1:'cat', col2:'dog'}, {col1:'horse', col2:'elephant'}]);
+
+var taboo4 = new Taboo();
+taboo4.addColumns(["one", "two"]);
+var table4 = new tabooTable('#table4', taboo4, {editableRowHeader: false});
+
 
 
 // var leftTaboo = taboo1.leftJoin('col1', taboo2, 'col1');

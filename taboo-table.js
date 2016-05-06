@@ -544,7 +544,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
         e.preventDefault();
 		e.stopPropagation();
         cell = element.querySelector('tr:nth-child(' + (currentRowIndex + 1)  + 
-                                         ") td:nth-child(" + (currentColumnIndex + 1) + ")");
+                                     ") td:nth-child(" + (currentColumnIndex + 1) + ")");
         var move = movement(cell, ENTER);
         move.focus();
 	  } else if (e.which === ESC) {
@@ -558,7 +558,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
 		setActiveText();
 		editor.style.display = 'none';
         cell = element.querySelector('tr:nth-child(' + (currentRowIndex + 1)  + 
-                                         ") td:nth-child(" + (currentColumnIndex + 1) + ")");
+                                     ") td:nth-child(" + (currentColumnIndex + 1) + ")");
         possibleMove = movement(cell, ARROW_RIGHT);
         if (possibleMove){
           possibleMove.focus();
@@ -631,7 +631,11 @@ var tabooTable = function (elementName, taboo, userOptions) {
   // init
   var e = new Editor();
   syncToHtml(taboo);
+  // add a single empty row if there are headers but no rows in the taboo
+  if (taboo.numberOfColumns() > 0 && taboo.numberOfRows() === 0){
+    addRow();
+  }
+  
   registerCallbacks();
-
 };
 
