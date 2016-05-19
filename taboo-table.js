@@ -452,6 +452,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
         editor = document.querySelector('body').appendChild(document.createElement('input')),
 		activeOptions = _.extend({}, defaultOptions, options),
 		ARROW_LEFT = 37, ARROW_UP = 38, ARROW_RIGHT = 39, ARROW_DOWN = 40, ENTER = 13, ESC = 27, TAB = 9,
+        F2 = 113, LEFT_WINDOWS = 91, RIGHT_WINDOWS = 92, SELECT = 93, CTRL = 17, BACKSPACE = 8,
 		active = undefined;
     
     editor.style.position= 'absolute';
@@ -560,7 +561,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
         cell = element.querySelector('tr:nth-child(' + (currentRowIndex + 1)  + 
                                      ") td:nth-child(" + (currentColumnIndex + 1) + ")");
         possibleMove = movement(cell, ARROW_RIGHT);
-        if (possibleMove){
+        if (possibleMove) {
           possibleMove.focus();
         } else {
           active.focus();
@@ -578,7 +579,26 @@ var tabooTable = function (elementName, taboo, userOptions) {
 		  e.preventDefault();
 		  e.stopPropagation();
 		}
-	  }
+	  } else {
+        // autocomplete
+        
+        // get the current column values
+        var cells = element.querySelectorAll('tr td:nth-child(' + (currentColumnIndex + 1) + ') span');
+        currentColumnIndex = Array.prototype.forEach.call(cells, function(cell, idx){
+          if (idx === currentRowIndex) return;
+          if (cell.textContent.startsWith(editor.value)){
+            // insert remaining cell value
+            var originalEditorLength = editor.value.length;
+            var cellLength = cell.textContent.length;
+            console.log(editor.value + cell.textContent.slice(originalEditorLength, cellLength));
+            editor.value = editor.value + cell.textContent.slice(originalEditorLength, cellLength);
+            
+            editor.setSelectionRange(0, 1);
+            // select remaining cell value
+            return;
+          }
+        });
+      }
 	};
     
     var elementKeydown = function(e) {
@@ -588,9 +608,11 @@ var tabooTable = function (elementName, taboo, userOptions) {
 		possibleMove.focus();
 	  } else if (e.which === ENTER) {
 		showEditor(false);
-	  } else if (e.which === 17 || e.which === 91 || e.which === 93) {
+	  } else if (e.which === CTRL || e.which === LEFT_WINDOWS || e.which === RIGHT_WINDOWS, e.which === F2) {
 		showEditor(true);
 		prevent = false;
+      } else if (e.which === BACKSPACE){
+        prevent = true;
       } else {
 		prevent = false;
 	  }
