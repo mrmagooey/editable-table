@@ -641,24 +641,13 @@ var tabooTable = function (elementName, taboo, userOptions) {
 
     // intercept keys for movement 
     var elementKeydown = function(e) {
-	    var prevent = true,
-		      possibleMove = movement(e.target, e.which);
+	    var possibleMove = movement(e.target, e.which);
 	    if (possibleMove) {
 		    possibleMove.focus();
-	    } else if (e.which === ENTER) {
-		    showEditor(false);
-	    } else if (e.which === CTRL || e.which === LEFT_WINDOWS || e.which === RIGHT_WINDOWS, e.which === F2) {
-		    showEditor(true);
-		    prevent = false;
-      } else if (e.which === BACKSPACE){
-        prevent = true;
-      } else {
-		    prevent = false;
-	    }
-	    if (prevent) {
-		    e.stopPropagation();
-		    e.preventDefault();
-	    }
+	    } else if (e.which === BACKSPACE) {
+        e.preventDefault();
+        showEditor(e);
+      }
 	  };
     
     var validate = function (event) {
@@ -673,7 +662,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
         editor.style.width = active.offsetWidth + 'px';
         editor.style.height = active.offsetHeight + 'px';
 	    }
-	  };
+	  }; 
     
     // Add event listeners
     editor.addEventListener('paste', validate);
@@ -687,7 +676,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
     element.addEventListener('keydown', elementKeydown);
     
 	  window.addEventListener('resize', windowResize);
-  };
+  }; // end Editor
   
   // init
   var e = new Editor();
