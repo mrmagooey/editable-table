@@ -4,7 +4,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
     addRowsButtons: true,
     addRowHeaderButtons: true,
     editableRows: true,
-    editableRowHeader: true,
+    editableRowHeader: true
   },
       globalOptions = {};
   if (_.isObject(userOptions)){
@@ -16,8 +16,8 @@ var tabooTable = function (elementName, taboo, userOptions) {
   var tableElement = document.querySelector(elementName),
       _this = this,
       cloneProperties= ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
-		                'text-align', 'font', 'font-size', 'font-family', 'font-weight',
-		                'border', 'border-top', 'border-bottom', 'border-left', 'border-right', 'height',
+		                    'text-align', 'font', 'font-size', 'font-family', 'font-weight',
+		                    'border', 'border-top', 'border-bottom', 'border-left', 'border-right', 'height',
                         'width'];
   this.taboo = taboo;
   
@@ -35,7 +35,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
     _this.taboo.getRows({objects:false}).forEach(function(row){
       addRow({data:row});
     });
-  };
+  }
   
   this.updateTaboo = function(newTaboo){
     this.taboo = newTaboo;
@@ -60,7 +60,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
     }
     // manually trigger taboo callbacks
     taboo.triggerCallbacks('update');
-  };
+  }
   
   function registerCallbacks(){
     taboo.registerCallback('update', syncToHtml);
@@ -114,7 +114,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
       td.appendChild(span);
       if (existingTd){
         copyStyle(td, existingTd);
-      };
+      }
       // if data has been passed need to add that to the newly created cells
       if (data) {
         span.textContent = data[i];
@@ -442,33 +442,34 @@ var tabooTable = function (elementName, taboo, userOptions) {
   // allows cells in the html table to altered
   var Editor = function(options){
     var defaultOptions = {
-	  cloneProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
-					    'text-align', 'font', 'font-size', 'font-family', 'font-weight',
-					    'border', 'border-top', 'border-bottom', 'border-left', 'border-right', 'height',
-                        'width'],
+	    cloneProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
+					              'text-align', 'font', 'font-size', 'font-family', 'font-weight',
+					              'border', 'border-top', 'border-bottom', 'border-left', 'border-right', 'height',
+                        'width']
     };
     
     var element = tableElement,
         editor = document.querySelector('body').appendChild(document.createElement('input')),
-		activeOptions = _.extend({}, defaultOptions, options),
-		ARROW_LEFT = 37, ARROW_UP = 38, ARROW_RIGHT = 39, ARROW_DOWN = 40, ENTER = 13, ESC = 27, TAB = 9,
+		    activeOptions = _.extend({}, defaultOptions, options),
+		    ARROW_LEFT = 37, ARROW_UP = 38, ARROW_RIGHT = 39, ARROW_DOWN = 40, ENTER = 13, ESC = 27, TAB = 9,
         F2 = 113, LEFT_WINDOWS = 91, RIGHT_WINDOWS = 92, SELECT = 93, CTRL = 17, BACKSPACE = 8,
-		active = undefined;
+		    active,
+        cursorPosition;
     
     editor.style.position= 'absolute';
     editor.style.display = 'none';
     element.style.cursor = 'pointer';
     
     var showEditor = function(event) {
-	  active = event.target;
+	    active = event.target;
       if (active === element){
         // user has clicked the table itself, not a cell within the table
         return;
       }
-	  if (active) {
+	    if (active) {
         if (active.tagName === "SPAN"){
           active = active.parentNode;
-        };
+        }
         if (active.parentNode.parentNode.tagName === "TBODY" && !globalOptions.editableRows ||
             active.parentNode.parentNode.tagName === "THEAD" && !globalOptions.editableRowHeader){
           return;
@@ -478,34 +479,34 @@ var tabooTable = function (elementName, taboo, userOptions) {
         activeOptions.cloneProperties.forEach(function(property){
           editor.style[property] = activeStyle[property];
         });
-		editor.classList.remove('error');
-		editor.style.display = '';
+		    editor.classList.remove('error');
+		    editor.style.display = '';
         var rect = active.getBoundingClientRect();
         editor.style.top = rect.top + document.body.scrollTop + 'px';
         editor.style.left = rect.left + document.body.scrollLeft + 'px';
-		editor.focus();
+		    editor.focus();
       }
-	};
+	  };
     
     var setActiveText = function () {
       var newText = editor.value;
-	  if (active.querySelector('span').textContent === newText || editor.classList.contains('error')) {
-		return true;
-	  } else {
+	    if (active.querySelector('span').textContent === newText || editor.classList.contains('error')) {
+		    return true;
+	    } else {
         active.querySelector('span').textContent = editor.value;
       }
       // update the taboo instance to which this table is linked
       syncToTaboo();
       return undefined;
-	};
+	  };
     
     var movement = function (cell, keycode) {
       var currentIndex;
-	  if (keycode === ARROW_RIGHT) {
-		return cell.nextElementSibling;
-	  } else if (keycode === ARROW_LEFT) {
-		return cell.previousElementSibling;
-	  } else if (keycode === ARROW_UP) {
+	    if (keycode === ARROW_RIGHT) {
+		    return cell.nextElementSibling;
+	    } else if (keycode === ARROW_LEFT) {
+		    return cell.previousElementSibling;
+	    } else if (keycode === ARROW_UP) {
         currentIndex = Array.prototype.indexOf.call(cell.parentNode.children, cell);
         var previous = cell.parentNode.previousElementSibling;
         if (previous){
@@ -513,7 +514,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
         } else{
           return false;
         }
-	  } else if (keycode === ARROW_DOWN || keycode === ENTER) {
+	    } else if (keycode === ARROW_DOWN || keycode === ENTER) {
         currentIndex = Array.prototype.indexOf.call(cell.parentNode.children, cell);
         var nextRow = cell.parentNode.nextElementSibling;
         // if there is another row beneath this one, move to it
@@ -524,14 +525,14 @@ var tabooTable = function (elementName, taboo, userOptions) {
           nextRow = addRow();
           return nextRow.children[currentIndex];
         }
-	  }
-	  return false;
-	};
+	    }
+	    return false;
+	  };
     
     var editorBlur = function (e) {
-	  setActiveText();
-	  editor.style.display = 'none';
-	};
+	    setActiveText();
+	    editor.style.display = 'none';
+	  };
     
     var editorKeydown = function(e) {
       var atEnd = editor.selectionEnd === editor.value.length,
@@ -540,24 +541,24 @@ var tabooTable = function (elementName, taboo, userOptions) {
           currentRowIndex = Array.prototype.indexOf.call(active.parentNode.parentNode.children, active.parentNode),
           cell,
           possibleMove;
-	  if (e.which === ENTER) {
+	    if (e.which === ENTER) {
         editor.dispatchEvent(new Event('blur'));
         e.preventDefault();
-		e.stopPropagation();
+		    e.stopPropagation();
         cell = element.querySelector('tr:nth-child(' + (currentRowIndex + 1)  + 
                                      ") td:nth-child(" + (currentColumnIndex + 1) + ")");
         var move = movement(cell, ENTER);
         move.focus();
-	  } else if (e.which === ESC) {
+	    } else if (e.which === ESC) {
         // ignore typed values, hide input editor
         editor.value = active.querySelector('span').textContent;
-		e.preventDefault();
-		e.stopPropagation();
-		editor.style.display = 'none';
-		active.focus();
-	  } else if (e.which === TAB) {
-		setActiveText();
-		editor.style.display = 'none';
+		    e.preventDefault();
+		    e.stopPropagation();
+		    editor.style.display = 'none';
+		    active.focus();
+	    } else if (e.which === TAB) {
+		    setActiveText();
+		    editor.style.display = 'none';
         cell = element.querySelector('tr:nth-child(' + (currentRowIndex + 1)  + 
                                      ") td:nth-child(" + (currentColumnIndex + 1) + ")");
         possibleMove = movement(cell, ARROW_RIGHT);
@@ -566,75 +567,113 @@ var tabooTable = function (elementName, taboo, userOptions) {
         } else {
           active.focus();
         }
-		e.preventDefault();
-		e.stopPropagation();
-	  } else if ((atEnd && (e.which === ARROW_DOWN || 
-                            e.which === ARROW_RIGHT))
-                 || 
-                 atStart && (e.which === ARROW_UP || 
-                             e.which === ARROW_LEFT)) {
-		possibleMove = movement(active, e.which);
-		if (possibleMove) {
+		    e.preventDefault();
+		    e.stopPropagation();
+	    } else if ((atEnd && (e.which === ARROW_DOWN || e.which === ARROW_RIGHT)) ||
+                 atStart && (e.which === ARROW_UP || e.which === ARROW_LEFT)) {
+		    possibleMove = movement(active, e.which);
+		    if (possibleMove) {
           possibleMove.focus();
-		  e.preventDefault();
-		  e.stopPropagation();
-		}
-	  } else {
-        // autocomplete
-        
-        // get the current column values
-        var cells = element.querySelectorAll('tr td:nth-child(' + (currentColumnIndex + 1) + ') span');
-        currentColumnIndex = Array.prototype.forEach.call(cells, function(cell, idx){
-          if (idx === currentRowIndex) return;
-          if (cell.textContent.startsWith(editor.value)){
-            // insert remaining cell value
-            var originalEditorLength = editor.value.length;
-            var cellLength = cell.textContent.length;
-            console.log(editor.value + cell.textContent.slice(originalEditorLength, cellLength));
-            editor.value = editor.value + cell.textContent.slice(originalEditorLength, cellLength);
-            
-            editor.setSelectionRange(0, 1);
-            // select remaining cell value
-            return;
-          }
-        });
+		      e.preventDefault();
+		      e.stopPropagation();
+		    }
+	    } else {
+        insert(e, currentColumnIndex, currentRowIndex);
       }
-	};
+	  };
+
+    var insert = function (e, currentColumnIndex, currentRowIndex){
+      // autocomplete
+      
+      var currentCursorPosition = editor.selectionStart,
+          pressedKey = e.shiftKey ? String.fromCharCode(e.which) : String.fromCharCode(e.which).toLowerCase(),
+          highlightedText = window.getSelection().toString(),
+          getMatches = function(){
+            // get the current column values
+            var cells = element.querySelectorAll('tr td:nth-child(' + (currentColumnIndex + 1) + ') span');
+            var matches = [];
+            Array.prototype.forEach.call(cells, function(cell, idx) {
+              if (idx === currentRowIndex) return;
+              if (cell.textContent.startsWith(editor.value)){
+                matches.push(cell.textContent);
+              }
+              matches.sort();
+            });
+            return matches;
+          },
+          alphaNumericRegex = /[a-zA-Z0-9]/;
+      
+      // only do autocomplete if the key is alphanumeric
+      if (alphaNumericRegex.exec(pressedKey)) {
+        var matches;
+        e.preventDefault();
+
+        // check if there is a suggestion 
+        if (highlightedText.length === 0){ // no suggestion
+          editor.value = editor.value + pressedKey;
+          // check if there is a potential autocomplete
+          matches = getMatches();
+          if (matches.length > 0){
+            // slice the first match in
+            editor.value = editor.value + matches[0].slice(currentCursorPosition + 1, matches[0].length);
+            // highlight suggestion
+            editor.setSelectionRange(currentCursorPosition + 1, matches[0].length);
+          }
+
+        } else { // suggestion already there
+          // get current suggestion
+          var suggestion = window.getSelection();
+          editor.value = editor.value.slice(0, editor.selectionStart) + editor.value.slice(editor.selectionEnd);
+          // insert the character before the suggestion
+          editor.value = editor.value + pressedKey;
+          // reupdate the suggestion
+          matches = getMatches();
+          if (matches.length > 0) {
+            // slice the first match in
+            editor.value = editor.value + matches[0].slice(currentCursorPosition + 1, matches[0].length);
+            // highlight suggestion
+            editor.setSelectionRange(currentCursorPosition + 1, matches[0].length);
+          }
+        }
+
+        
+      }
+    };
     
     var elementKeydown = function(e) {
-	  var prevent = true,
-		  possibleMove = movement(e.target, e.which);
-	  if (possibleMove) {
-		possibleMove.focus();
-	  } else if (e.which === ENTER) {
-		showEditor(false);
-	  } else if (e.which === CTRL || e.which === LEFT_WINDOWS || e.which === RIGHT_WINDOWS, e.which === F2) {
-		showEditor(true);
-		prevent = false;
+	    var prevent = true,
+		      possibleMove = movement(e.target, e.which);
+	    if (possibleMove) {
+		    possibleMove.focus();
+	    } else if (e.which === ENTER) {
+		    showEditor(false);
+	    } else if (e.which === CTRL || e.which === LEFT_WINDOWS || e.which === RIGHT_WINDOWS, e.which === F2) {
+		    showEditor(true);
+		    prevent = false;
       } else if (e.which === BACKSPACE){
         prevent = true;
       } else {
-		prevent = false;
-	  }
-	  if (prevent) {
-		e.stopPropagation();
-		e.preventDefault();
-	  }
-	};
+		    prevent = false;
+	    }
+	    if (prevent) {
+		    e.stopPropagation();
+		    e.preventDefault();
+	    }
+	  };
     
     var validate = function (event) {
       // TODO do something?
-	};
+	  };
 
     var windowResize = function (event) {
-	  if (editor.style.display !== 'none') {
+	    if (editor.style.display !== 'none') {
         var rect = active.getBoundingClientRect();
         editor.style.top = rect.top + document.body.scrollTop + 'px';
         editor.style.left = rect.left + document.body.scrollLeft + 'px';
         editor.style.width = active.offsetWidth + 'px';
         editor.style.height = active.offsetHeight + 'px';
-	  }
-	};
+	    }
+	  };
     
     // Add event listeners
     editor.addEventListener('paste', validate);
@@ -647,7 +686,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
     element.addEventListener('dblclick', showEditor);
     element.addEventListener('keydown', elementKeydown);
     
-	window.addEventListener('resize', windowResize);
+	  window.addEventListener('resize', windowResize);
   };
   
   // init

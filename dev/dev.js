@@ -1,9 +1,9 @@
 
 
 var taboo1 = new Taboo();
-taboo1.addRows([{col1:'a', col3:'b'}, {col1:'c', col3:'d'}]);
+taboo1.addRows([{col1:'abcdef', col3:'blkjlij'}, {col1:'abcdefghij', col3:'dlxicv'}]);
 var table1 = new tabooTable('#table1', taboo1);
-taboo1.addRows([{col1:'e', col3:'f'}, {col1:'g', col3:'h'}]);
+taboo1.addRows([{col1:'abc', col3:'flnvlhn'}, {col1:'a', col3:'h'}]);
 
 var taboo2 = new Taboo();
 taboo2.addRows([{col1:'a', col2:'b'}, {col1:'c', col2:'asdf'}]);
