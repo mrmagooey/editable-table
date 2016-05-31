@@ -566,7 +566,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
         if (possibleMove) {
           possibleMove.focus();
         } else {
-          active.focus();
+          cell.focus();
         }
 		    e.preventDefault();
 		    e.stopPropagation();
