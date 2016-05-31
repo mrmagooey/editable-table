@@ -4,7 +4,8 @@ var tabooTable = function (elementName, taboo, userOptions) {
     addRowsButtons: true,
     addRowHeaderButtons: true,
     editableRows: true,
-    editableRowHeader: true
+    editableRowHeader: true,
+    autocomplete: true
   },
       globalOptions = {};
   if (_.isObject(userOptions)){
@@ -462,7 +463,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
     
     var showEditor = function(event) {
 	    active = event.target;
-      if (active === element){
+      if (active === element) {
         // user has clicked the table itself, not a cell within the table
         return;
       }
@@ -581,65 +582,64 @@ var tabooTable = function (elementName, taboo, userOptions) {
         insert(e, currentColumnIndex, currentRowIndex);
       }
 	  };
-
+    
     var insert = function (e, currentColumnIndex, currentRowIndex){
-      // autocomplete
-      
-      var currentCursorPosition = editor.selectionStart,
-          pressedKey = e.shiftKey ? String.fromCharCode(e.which) : String.fromCharCode(e.which).toLowerCase(),
-          highlightedText = window.getSelection().toString(),
-          getMatches = function(){
-            // get the current column values
-            var cells = element.querySelectorAll('tr td:nth-child(' + (currentColumnIndex + 1) + ') span');
-            var matches = [];
-            Array.prototype.forEach.call(cells, function(cell, idx) {
-              if (idx === currentRowIndex) return;
-              if (cell.textContent.startsWith(editor.value)){
-                matches.push(cell.textContent);
-              }
-              matches.sort();
-            });
-            return matches;
-          },
-          alphaNumericRegex = /[a-zA-Z0-9]/;
-      
-      // only do autocomplete if the key is alphanumeric
-      if (alphaNumericRegex.exec(pressedKey)) {
-        var matches;
-        e.preventDefault();
+      if (globalOptions.autocomplete){
+        var currentCursorPosition = editor.selectionStart,
+            pressedKey = e.shiftKey ? String.fromCharCode(e.which) : String.fromCharCode(e.which).toLowerCase(),
+            highlightedText = window.getSelection().toString(),
+            getMatches = function(){
+              // get the current column values
+              var cells = element.querySelectorAll('tr td:nth-child(' + (currentColumnIndex + 1) + ') span');
+              var matches = [];
+              Array.prototype.forEach.call(cells, function(cell, idx) {
+                if (idx === currentRowIndex) return;
+                if (cell.textContent.startsWith(editor.value)){
+                  matches.push(cell.textContent);
+                }
+                matches.sort();
+              });
+              return matches;
+            },
+            alphaNumericRegex = /[a-zA-Z0-9]/;
+        
+        // only do autocomplete if the key is alphanumeric
+        if (alphaNumericRegex.exec(pressedKey)) {
+          var matches;
+          e.preventDefault();
+          
+          // check if there is a suggestion 
+          if (highlightedText.length === 0){ // no suggestion
+            editor.value = editor.value + pressedKey;
+            // check if there is a potential autocomplete
+            matches = getMatches();
+            if (matches.length > 0){
+              // slice the first match in
+              editor.value = editor.value + matches[0].slice(currentCursorPosition + 1, matches[0].length);
+              // highlight suggestion
+              editor.setSelectionRange(currentCursorPosition + 1, matches[0].length);
+            }
 
-        // check if there is a suggestion 
-        if (highlightedText.length === 0){ // no suggestion
-          editor.value = editor.value + pressedKey;
-          // check if there is a potential autocomplete
-          matches = getMatches();
-          if (matches.length > 0){
-            // slice the first match in
-            editor.value = editor.value + matches[0].slice(currentCursorPosition + 1, matches[0].length);
-            // highlight suggestion
-            editor.setSelectionRange(currentCursorPosition + 1, matches[0].length);
-          }
-
-        } else { // suggestion already there
-          // get current suggestion
-          var suggestion = window.getSelection();
-          editor.value = editor.value.slice(0, editor.selectionStart) + editor.value.slice(editor.selectionEnd);
-          // insert the character before the suggestion
-          editor.value = editor.value + pressedKey;
-          // reupdate the suggestion
-          matches = getMatches();
-          if (matches.length > 0) {
-            // slice the first match in
-            editor.value = editor.value + matches[0].slice(currentCursorPosition + 1, matches[0].length);
-            // highlight suggestion
-            editor.setSelectionRange(currentCursorPosition + 1, matches[0].length);
+          } else { // suggestion already there
+            // get current suggestion
+            var suggestion = window.getSelection();
+            editor.value = editor.value.slice(0, editor.selectionStart) + editor.value.slice(editor.selectionEnd);
+            // insert the character before the suggestion
+            editor.value = editor.value + pressedKey;
+            // reupdate the suggestion
+            matches = getMatches();
+            if (matches.length > 0) {
+              // slice the first match in
+              editor.value = editor.value + matches[0].slice(currentCursorPosition + 1, matches[0].length);
+              // highlight suggestion
+              editor.setSelectionRange(currentCursorPosition + 1, matches[0].length);
+            }
           }
         }
-
-        
       }
     };
-    
+
+    // intercept keys for movement 
     var elementKeydown = function(e) {
 	    var prevent = true,
 		      possibleMove = movement(e.target, e.which);
