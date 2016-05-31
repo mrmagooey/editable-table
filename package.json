@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "build": "node_modules/uglify-js/bin/uglifyjs taboo-table.js -o taboo-table.min.js --screw-ie8 --mangle --compress"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,8 @@
   "homepage": "https://github.com/mrmagooey/taboo-table#readme",
   "dependencies": {
     "taboo": "^0.2.1"
+  },
+  "devDependencies": {
+    "uglify": "^0.1.5"
   }
 }
