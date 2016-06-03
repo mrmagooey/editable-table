@@ -5,7 +5,8 @@ var tabooTable = function (elementName, taboo, userOptions) {
     addRowHeaderButtons: true,
     editableRows: true,
     editableRowHeader: true,
-    autocomplete: true
+    autocomplete: true,
+    autocompleteLists: undefined,
   },
       globalOptions = {};
   if (_.isObject(userOptions)){
@@ -18,12 +19,12 @@ var tabooTable = function (elementName, taboo, userOptions) {
       _this = this,
       cloneProperties= ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
 		                    'text-align', 'font', 'font-size', 'font-family', 'font-weight',
-		                    'border', 'border-top', 'border-bottom', 'border-left', 'border-right', 'height',
-                        'width'];
+		                    'border', 'border-top', 'border-bottom', 'border-left', 'border-right',
+                        'height', 'width'];
   this.taboo = taboo;
   
   if (tableElement === null) {
-    console.log("Taboo-Table Selector " + elementName + " does not exist");
+    console.warn("Taboo-Table Selector " + elementName + " does not exist");
     return;
   }
   
@@ -147,12 +148,12 @@ var tabooTable = function (elementName, taboo, userOptions) {
       index = index + 1;
       var before = tableElement.querySelector('thead tr :nth-of-type('+ index +')');
       if (before === null){
-        newTh = tableElement.querySelector('thead tr').appendChild(document.createElement('th'));        
+        newTh = tableElement.querySelector('thead tr').appendChild(document.createElement('th'));
       } else {
         newTh = tableElement.querySelector('thead tr').insertBefore(document.createElement('th'), before);
       }
     } else {
-      newTh = tableElement.querySelector('thead tr').appendChild(document.createElement('th'));        
+      newTh = tableElement.querySelector('thead tr').appendChild(document.createElement('th'));
     }
     // add rows
     var newSpan = newTh.appendChild(document.createElement('span')),
@@ -439,7 +440,11 @@ var tabooTable = function (elementName, taboo, userOptions) {
   var clearTable = function(){
     tableElement.innerHTML = '<thead><tr></tr></thead><tbody></tbody>';
   };
-  
+
+  var updateAutocompleteLists = function(){
+    
+  };
+
   // allows cells in the html table to altered
   var Editor = function(options){
     var defaultOptions = {
@@ -582,44 +587,44 @@ var tabooTable = function (elementName, taboo, userOptions) {
         insert(e, currentColumnIndex, currentRowIndex);
       }
 	  };
-    
+
+    var getMatches = function(currentColumnIndex, currentRowIndex){
+      // get the current column values
+      var cells = element.querySelectorAll('tr td:nth-child(' +
+                                           (currentColumnIndex +
+                                            1) + ') span');
+      var matches = [];
+      Array.prototype.forEach.call(cells, function(cell, idx) {
+        if (idx === currentRowIndex) return;
+        if (cell.textContent.startsWith(editor.value)){
+          matches.push(cell.textContent);
+        }
+        matches.sort();
+      });
+      return matches;
+    };
+
     var insert = function (e, currentColumnIndex, currentRowIndex){
       if (globalOptions.autocomplete){
         var currentCursorPosition = editor.selectionStart,
             pressedKey = e.shiftKey ? String.fromCharCode(e.which) : String.fromCharCode(e.which).toLowerCase(),
             highlightedText = window.getSelection().toString(),
-            getMatches = function(){
-              // get the current column values
-              var cells = element.querySelectorAll('tr td:nth-child(' + (currentColumnIndex + 1) + ') span');
-              var matches = [];
-              Array.prototype.forEach.call(cells, function(cell, idx) {
-                if (idx === currentRowIndex) return;
-                if (cell.textContent.startsWith(editor.value)){
-                  matches.push(cell.textContent);
-                }
-                matches.sort();
-              });
-              return matches;
-            },
             alphaNumericRegex = /[a-zA-Z0-9]/;
-        
         // only do autocomplete if the key is alphanumeric
         if (alphaNumericRegex.exec(pressedKey)) {
           var matches;
           e.preventDefault();
-          
           // check if there is a suggestion 
           if (highlightedText.length === 0){ // no suggestion
             editor.value = editor.value + pressedKey;
             // check if there is a potential autocomplete
-            matches = getMatches();
+            matches = getMatches(currentColumnIndex, currentRowIndex);
             if (matches.length > 0){
               // slice the first match in
               editor.value = editor.value + matches[0].slice(currentCursorPosition + 1, matches[0].length);
               // highlight suggestion
               editor.setSelectionRange(currentCursorPosition + 1, matches[0].length);
             }
-
           } else { // suggestion already there
             // get current suggestion
             var suggestion = window.getSelection();
@@ -686,6 +691,6 @@ var tabooTable = function (elementName, taboo, userOptions) {
     addRow();
   }
   
-  registerCallbacks();
+  taboo.registerCallback('update', syncToHtml);
 };
 
