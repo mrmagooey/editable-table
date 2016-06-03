@@ -6,7 +6,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
     editableRows: true,
     editableRowHeader: true,
     autocomplete: true,
-    autocompleteLists: undefined,
+    autocompleteLists: {},
   },
       globalOptions = {};
   if (_.isObject(userOptions)){
@@ -441,8 +441,8 @@ var tabooTable = function (elementName, taboo, userOptions) {
     tableElement.innerHTML = '<thead><tr></tr></thead><tbody></tbody>';
   };
 
-  var updateAutocompleteLists = function(){
-    
+  this.updateAutocompleteLists = function(column, autocompleteSuggestions){
+    globalOptions.autocompleteLists[column] = autocompleteSuggestions;
   };
 
   // allows cells in the html table to altered
@@ -589,6 +589,9 @@ var tabooTable = function (elementName, taboo, userOptions) {
 	  };
 
     var getMatches = function(currentColumnIndex, currentRowIndex){
+      var header = element.querySelector('tr th:nth-child(' + (currentColumnIndex + 1) + ') span').textContent,
+          externalSuggestions = globalOptions.autocompleteLists[header];
+      console.log(header);
       // get the current column values
       var cells = element.querySelectorAll('tr td:nth-child(' +
                                            (currentColumnIndex +
@@ -599,8 +602,15 @@ var tabooTable = function (elementName, taboo, userOptions) {
         if (cell.textContent.startsWith(editor.value)){
           matches.push(cell.textContent);
         }
-        matches.sort();
       });
+      if (_.isArray(externalSuggestions)){
+        externalSuggestions.forEach(function(externalSuggestion,idx){
+          if (externalSuggestion.startsWith(editor.value)){
+            matches.push(externalSuggestion);
+          }
+        });
+      }
+      matches.sort();
       return matches;
     };
 
@@ -632,7 +642,7 @@ var tabooTable = function (elementName, taboo, userOptions) {
             // insert the character before the suggestion
             editor.value = editor.value + pressedKey;
             // reupdate the suggestion
-            matches = getMatches();
+            matches = getMatches(currentColumnIndex, currentRowIndex);
             if (matches.length > 0) {
               // slice the first match in
               editor.value = editor.value + matches[0].slice(currentCursorPosition + 1, matches[0].length);

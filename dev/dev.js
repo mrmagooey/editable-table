@@ -13,15 +13,20 @@ taboo2.addRows([{col1:'cat', col2:'dog'}, {col1:'horse', col2:'elephant'}]);
 
 var taboo3 = new Taboo();
 taboo3.addRows([{col1:'a', col2:'b'}, {col1:'c', col2:'asdf'}]);
-var table3 = new tabooTable('#table3', taboo3, {editableRows: false,
-                                                editableRowHeader: false});
+var table3 = new tabooTable('#table3', taboo3, {});
 taboo3.addRows([{col1:'cat', col2:'dog'}, {col1:'horse', col2:'elephant'}]);
 
 var taboo4 = new Taboo();
 taboo4.addColumns(["one", "two"]);
-var table4 = new tabooTable('#table4', taboo4, {editableRowHeader: false});
+taboo4.addRows([["test", "one"], ["alkj", "ldksjf"]]);
+var table4 = new tabooTable('#table4', taboo4, {editableRowHeader: false,
+                                                autocompleteLists: {"one": taboo3.getColumn("col1")}});
 
+function updateAutocomplete(){
+  table4.updateAutocompleteLists("one", taboo3.getColumn("col1"));
+}
 
+taboo3.registerCallback("update", updateAutocomplete);
 
 // var leftTaboo = taboo1.leftJoin('col1', taboo2, 'col1');
 // var leftTable = new tabooTable('#join', leftTaboo);
