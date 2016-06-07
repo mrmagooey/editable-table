@@ -1,6 +1,6 @@
 {
   "name": "taboo-table",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "html tables for taboo",
   "main": "taboo-table.js",
   "directories": {
