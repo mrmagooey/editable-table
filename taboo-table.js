@@ -591,7 +591,6 @@ var tabooTable = function (elementName, taboo, userOptions) {
     var getMatches = function(currentColumnIndex, currentRowIndex){
       var header = element.querySelector('tr th:nth-child(' + (currentColumnIndex + 1) + ') span').textContent,
           externalSuggestions = globalOptions.autocompleteLists[header];
-      console.log(header);
       // get the current column values
       var cells = element.querySelectorAll('tr td:nth-child(' +
                                            (currentColumnIndex +
